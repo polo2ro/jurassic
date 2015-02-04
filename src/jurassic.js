@@ -1,4 +1,4 @@
-
+'use strict';
 
 /**
  * Entry point for all classes

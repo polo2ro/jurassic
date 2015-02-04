@@ -1,5 +1,7 @@
+'use strict';
+
 /**
- * Representation of a period
+ * Representation of a period (timespan)
  *
  */
 function Period()

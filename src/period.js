@@ -1,4 +1,3 @@
-'use strict';
 
 /**
  * Representation of a period (timespan)
@@ -6,6 +5,8 @@
  */
 function Period()
 {
+    'use strict';
+
     /**
      * @var {Date}
      */

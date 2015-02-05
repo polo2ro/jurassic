@@ -1,8 +1,7 @@
-'use strict';
-
-
 function Boundary()
 {
+    'use strict';
+
     this.left = [];
 
     this.right = [];
@@ -17,5 +16,5 @@ function Boundary()
     this.addPeriod = function(position, period)
     {
         b[position].push(period);
-    }
+    };
 }

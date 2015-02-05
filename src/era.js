@@ -1,4 +1,4 @@
-'use strict';
+
 
 /**
  * Representation of a list of periods
@@ -6,6 +6,8 @@
  */
 function Era()
 {
+    'use strict';
+
     this.periods = [];
 
     this.boundaries = {};
@@ -31,7 +33,7 @@ function Era()
         }
 
         return r;
-    }
+    };
 
     /**
      * Get the list of periods keys in intersections with the specified Era object
@@ -51,7 +53,7 @@ function Era()
         }
 
         return r;
-    }
+    };
 
 
 
@@ -66,7 +68,7 @@ function Era()
         instance.addBoundary(period.dtstart, period, 'right');
         instance.addBoundary(period.dtend, period, 'left');
 
-    }
+    };
 
 
 
@@ -82,7 +84,7 @@ function Era()
         }
 
         instance.boundaries[rootDate].addPeriod(position, period);
-    }
+    };
 
 
 
@@ -93,18 +95,19 @@ function Era()
      */
     this.addEra = function(era)
     {
+        var i;
         var r = new Era();
 
         var sourceConflicts = instance.getEraIntersectionsKeys(era);
         var targetConflicts = era.getEraIntersectionsKeys(instance);
 
-        for(var i=0; i<instance.periods.length; i++) {
+        for(i=0; i<instance.periods.length; i++) {
             if (-1 === sourceConflicts.indexOf(i)) {
                 r.push(instance.periods[i]);
             }
         }
 
-        for(var i=0; i<era.periods.length; i++) {
+        for(i=0; i<era.periods.length; i++) {
             if (-1 === targetConflicts.indexOf(i)) {
                 r.push(era.periods[i]);
             }
@@ -113,7 +116,7 @@ function Era()
         // TODO: merge conflicts periods
 
 
-    }
+    };
 
     /**
      * Returns a new Era object whose value is the difference between the specified Era object and this instance.
@@ -123,5 +126,5 @@ function Era()
     this.substractEra = function(era)
     {
 
-    }
+    };
 }

@@ -1,10 +1,12 @@
-'use strict';
+
 
 /**
  * Entry point for all classes
  */
-function jurassic()
+function Jurassic()
 {
-    this.era = era;
-    this.period = period;
+    'use strict';
+
+    this.era = Era;
+    this.period = Period;
 }

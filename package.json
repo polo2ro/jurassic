@@ -1,0 +1,21 @@
+{
+  "name": "jurassic",
+  "description": "A javascript library for manipulating periods.",
+  "version": "0.11.0",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/polo2ro/jurassic.git"
+  },
+  "engines": {
+    "node": ">= 0.8.0"
+  },
+  "scripts": {
+    "test": "grunt test"
+  },
+  "dependencies": {
+  },
+  "devDependencies": {
+    "grunt": "~0.4.5",
+    "grunt-contrib-jshint": "~0.11.0"
+  }
+}

@@ -8,8 +8,14 @@ function Era()
 {
     'use strict';
 
+    /**
+     * All periods
+     */
     this.periods = [];
 
+    /**
+     * Boundaries indexed by date
+     */
     this.boundaries = {};
 
     var instance = this;

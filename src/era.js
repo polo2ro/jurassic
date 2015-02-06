@@ -10,56 +10,25 @@ function Era()
 
     /**
      * All periods
+     * @var {Array}
      */
     this.periods = [];
 
     /**
+     * All boundaries
+     * @var {Array}
+     */
+    this.boundaries = [];
+
+    /**
      * Boundaries indexed by date
      */
-    this.boundaries = {};
+    this.boundariesByDate = {};
+
 
     var instance = this;
 
 
-    /**
-     * Get the list of periods keys in intersections with the specified Period object
-     * @param {Period} period
-     * @return {Array}
-     */
-    this.getPeriodIntersectionskeys = function(period)
-    {
-        var r = [];
-
-        for (var i=0; i<instance.periods.length; i++) {
-            if (instance.periods[i].dtstart >= period.dtend || instance.periods[i].dtend <= period.dtstart) {
-                continue;
-            }
-
-            r.push(i);
-        }
-
-        return r;
-    };
-
-    /**
-     * Get the list of periods keys in intersections with the specified Era object
-     * @param {Era} era
-     * @return {Array}
-     */
-    this.getEraIntersectionsKeys = function(era)
-    {
-        var r = [];
-
-        for (var i=0; i<era.periods.length; i++) {
-
-            Array.prototype.push.apply(
-                r,
-                instance.getPeriodIntersectionskeys(instance.periods[i])
-            );
-        }
-
-        return r;
-    };
 
 
 
@@ -85,12 +54,65 @@ function Era()
      */
     this.addBoundary = function(rootDate, period, position)
     {
-        if (instance.boundaries[rootDate] === undefined) {
-            instance.boundaries[rootDate] = new Boundary();
+        if (instance.boundariesByDate[rootDate] === undefined) {
+            var newBoundary = new Boundary(rootDate);
+            instance.boundariesByDate[rootDate] = newBoundary;
+            instance.boundaries.push(newBoundary);
         }
 
-        instance.boundaries[rootDate].addPeriod(position, period);
+        instance.boundariesByDate[rootDate].addPeriod(position, period);
     };
+
+
+    this.sortBoundaries = function()
+    {
+        instance.boundaries.sort(function(a, b) {
+
+            if (a.rootDate > b.rootDate) {
+                return 1;
+            }
+
+            if (a.rootDate < b.rootDate) {
+                return -1;
+            }
+
+            return 0;
+        });
+    }
+
+
+    /**
+     * Get new Era object with merged overlapping events
+     * @return {Era}
+     */
+    this.getFlattenedEra = function()
+    {
+        instance.sortBoundaries();
+        var boundary, openStatus = false, lastDate = null, flattenedEra = new Era();
+
+        for(var i=0; i<instance.boundaries; i++) {
+            boundary = instance.boundaries[i];
+
+            // open period
+            if (!openStatus && boundary.left.length === 0) {
+                openStatus = true;
+                lastDate = new Date(boundary.rootDate);
+                continue;
+            }
+
+            // close period
+            if (openStatus && boundary.right.length === 0) {
+                openStatus = false;
+
+                period = new Period();
+                period.dtstart = new Date(lastDate);
+                period.dtend = new Date(boundary.rootDate);
+                flattenedEra.addPeriod(period);
+            }
+        }
+
+        return flattenedEra;
+    }
 
 
 
@@ -101,27 +123,9 @@ function Era()
      */
     this.addEra = function(era)
     {
-        var i;
-        var r = new Era();
-
-        var sourceConflicts = instance.getEraIntersectionsKeys(era);
-        var targetConflicts = era.getEraIntersectionsKeys(instance);
-
-        for(i=0; i<instance.periods.length; i++) {
-            if (-1 === sourceConflicts.indexOf(i)) {
-                r.push(instance.periods[i]);
-            }
+        for(var i=0; i<era.periods.length; i++) {
+            instance.addPeriod(era.periods[i]);
         }
-
-        for(i=0; i<era.periods.length; i++) {
-            if (-1 === targetConflicts.indexOf(i)) {
-                r.push(era.periods[i]);
-            }
-        }
-
-        // TODO: merge conflicts periods
-
-
     };
 
     /**

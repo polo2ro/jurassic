@@ -1,6 +1,12 @@
-function Boundary()
+/**
+ * A list of periods linked with the finish date (left) or start date (right)
+ * @param {Date} rootDate   Root date on Era
+ */
+function Boundary(rootDate)
 {
     'use strict';
+
+    this.rootDate = rootDate;
 
     this.left = [];
 

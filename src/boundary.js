@@ -1,8 +1,9 @@
+
 /**
  * A list of periods linked with the finish date (left) or start date (right)
  * @param {Date} rootDate   Root date on Era
  */
-function Boundary(rootDate)
+exports = module.export = function Boundary(rootDate)
 {
     'use strict';
 
@@ -23,4 +24,4 @@ function Boundary(rootDate)
     {
         b[position].push(period);
     };
-}
+};

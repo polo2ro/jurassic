@@ -4,7 +4,7 @@
  * Representation of a list of periods
  * periods must not be overlapped in an Era object
  */
-function Era()
+exports = module.exports = function Era()
 {
     'use strict';
 
@@ -55,7 +55,7 @@ function Era()
     this.addBoundary = function(rootDate, period, position)
     {
         if (instance.boundariesByDate[rootDate] === undefined) {
-            var newBoundary = new Boundary(rootDate);
+            var newBoundary = new require('./boundary')(rootDate);
             instance.boundariesByDate[rootDate] = newBoundary;
             instance.boundaries.push(newBoundary);
         }
@@ -78,7 +78,7 @@ function Era()
 
             return 0;
         });
-    }
+    };
 
 
     /**
@@ -88,7 +88,7 @@ function Era()
     this.getFlattenedEra = function()
     {
         instance.sortBoundaries();
-        var boundary, openStatus = false, lastDate = null, flattenedEra = new Era();
+        var boundary, openStatus = false, lastDate = null, flattenedEra = new Era(), period;
 
         for(var i=0; i<instance.boundaries; i++) {
             boundary = instance.boundaries[i];
@@ -104,7 +104,7 @@ function Era()
             if (openStatus && boundary.right.length === 0) {
                 openStatus = false;
 
-                period = new Period();
+                period = new require('./period')();
                 period.dtstart = new Date(lastDate);
                 period.dtend = new Date(boundary.rootDate);
                 flattenedEra.addPeriod(period);
@@ -112,7 +112,7 @@ function Era()
         }
 
         return flattenedEra;
-    }
+    };
 
 
 
@@ -137,4 +137,4 @@ function Era()
     {
 
     };
-}
+};

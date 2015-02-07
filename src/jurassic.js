@@ -3,10 +3,15 @@
 /**
  * Entry point for all classes
  */
-function Jurassic()
-{
+
+
+exports = module.export = function() {
+
     'use strict';
 
-    this.era = Era;
-    this.period = Period;
-}
+    return {
+        Era: require('./era'),
+        Period: require('./period'),
+        test: 1
+    };
+};

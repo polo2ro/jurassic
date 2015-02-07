@@ -79,5 +79,6 @@
   "white"         : true,    // true: Check against strict whitespace and indentation rules
 
   // Custom Globals
-  "predef"        : ["module", "Jurassic", "Period", "Boundary", "Era"]       // additional predefined global variables
+  "node"          : true,
+  "predef"        : []       // additional predefined global variables
 }

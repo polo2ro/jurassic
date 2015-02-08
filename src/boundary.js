@@ -3,7 +3,7 @@
  * A list of periods linked with the finish date (left) or start date (right)
  * @param {Date} rootDate   Root date on Era
  */
-exports = module.export = function Boundary(rootDate)
+module.exports = function Boundary(rootDate)
 {
     'use strict';
 

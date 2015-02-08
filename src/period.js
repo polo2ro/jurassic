@@ -3,7 +3,7 @@
  * Representation of a period (timespan)
  *
  */
-exports = module.export = function Period()
+module.exports = function Period()
 {
     'use strict';
 
@@ -21,4 +21,11 @@ exports = module.export = function Period()
      * @var {Era}
      */
     this.era = null;
+
+    var instance = this;
+
+    this.test = function()
+    {
+
+    };
 };

@@ -5,13 +5,8 @@
  */
 
 
-exports = module.export = function() {
 
-    'use strict';
+exports.Era = require('./era');
+exports.Period = require('./period');
 
-    return {
-        Era: require('./era'),
-        Period: require('./period'),
-        test: 1
-    };
-};
+

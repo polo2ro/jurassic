@@ -4,7 +4,7 @@
  * Representation of a list of periods
  * periods must not be overlapped in an Era object
  */
-exports = module.exports = function Era()
+module.exports = function Era()
 {
     'use strict';
 
@@ -55,7 +55,10 @@ exports = module.exports = function Era()
     this.addBoundary = function(rootDate, period, position)
     {
         if (instance.boundariesByDate[rootDate] === undefined) {
-            var newBoundary = new require('./boundary')(rootDate);
+
+            var Boundary = require('./boundary');
+            var newBoundary = new Boundary(rootDate);
+
             instance.boundariesByDate[rootDate] = newBoundary;
             instance.boundaries.push(newBoundary);
         }
@@ -88,23 +91,25 @@ exports = module.exports = function Era()
     this.getFlattenedEra = function()
     {
         instance.sortBoundaries();
+        var Period = require('./period');
+
         var boundary, openStatus = false, lastDate = null, flattenedEra = new Era(), period;
 
-        for(var i=0; i<instance.boundaries; i++) {
+        for(var i=0; i<instance.boundaries.length; i++) {
             boundary = instance.boundaries[i];
 
             // open period
-            if (!openStatus && boundary.left.length === 0) {
+            if (!openStatus && boundary.left.length === 0) { // nothing before boundary
                 openStatus = true;
                 lastDate = new Date(boundary.rootDate);
                 continue;
             }
 
             // close period
-            if (openStatus && boundary.right.length === 0) {
+            if (openStatus && boundary.right.length === 0) { // nothing after boundary
                 openStatus = false;
 
-                period = new require('./period')();
+                period = new Period();
                 period.dtstart = new Date(lastDate);
                 period.dtend = new Date(boundary.rootDate);
                 flattenedEra.addPeriod(period);

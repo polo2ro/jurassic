@@ -33,10 +33,10 @@ module.exports = function Boundary(rootDate)
     this.removePeriod = function(position, period)
     {
         for (var i=0; i<b[position].length; i++) {
-            if (b[position][i].dtstart === period.dtstart && b[position][i].dtend === period.dtend) {
+            if (b[position][i].dtstart.getTime() === period.dtstart.getTime() && b[position][i].dtend.getTime() === period.dtend.getTime()) {
                 b[position].splice(i, 1);
                 break;
             }
         }
-    }
+    };
 };

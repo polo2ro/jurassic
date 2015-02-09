@@ -49,7 +49,7 @@ module.exports = function Era()
     this.removePeriod = function(period)
     {
         for (var i=0; i<instance.periods.length; i++) {
-            if(instance.periods[i].dtstart == period.dtstart && instance.periods[i].dtend == period.dtend) {
+            if(instance.periods[i].dtstart.getTime() === period.dtstart.getTime() && instance.periods[i].dtend.getTime() === period.dtend.getTime()) {
                 instance.periods.splice(i, 1);
                 break;
             }
@@ -96,7 +96,7 @@ module.exports = function Era()
             delete instance.boundariesByDate[rootDate];
 
             for (var i=0; i<instance.boundaries.length; i++) {
-                if (instance.boundaries[i].rootDate == rootDate) {
+                if (instance.boundaries[i].rootDate.getTime() === rootDate.getTime()) {
                     instance.boundaries.splice(i, 1);
                     break;
                 }
@@ -189,8 +189,8 @@ module.exports = function Era()
      */
     this.substractEra = function(era)
     {
-        for(var p=0; p < era.periods.length; p++) {
-            era.periods[p]
-        }
+        //for(var p=0; p < era.periods.length; p++) {
+        //    era.periods[p];
+        //}
     };
 };

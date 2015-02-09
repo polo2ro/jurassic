@@ -40,19 +40,32 @@ module.exports = function Era()
     this.addPeriod = function(period)
     {
         instance.periods.push(period);
-        instance.addBoundary(period.dtstart, period, 'right');
-        instance.addBoundary(period.dtend, period, 'left');
+        instance.addPeriodBoundary(period.dtstart, period, 'right');
+        instance.addPeriodBoundary(period.dtend, period, 'left');
 
+    };
+
+
+    this.removePeriod = function(period)
+    {
+        for (var i=0; i<instance.periods.length; i++) {
+            if(instance.periods[i].dtstart == period.dtstart && instance.periods[i].dtend == period.dtend) {
+                instance.periods.splice(i, 1);
+                break;
+            }
+        }
     };
 
 
 
 
     /**
-     * @var {Date} rootDate
-     * @var {Period} period
+     * Add a period to boundary, create the boundary if necessary
+     * @param {Date} rootDate
+     * @param {Period} period
+     * @param {string} position
      */
-    this.addBoundary = function(rootDate, period, position)
+    this.addPeriodBoundary = function(rootDate, period, position)
     {
         if (instance.boundariesByDate[rootDate] === undefined) {
 
@@ -64,6 +77,31 @@ module.exports = function Era()
         }
 
         instance.boundariesByDate[rootDate].addPeriod(position, period);
+    };
+
+
+    /**
+     * Remove period from boundary, delete the boundary if necessary
+     * @param {Date} rootDate
+     * @param {Period} period
+     * @param {string} position
+     */
+    this.removePeriodBoundary = function(rootDate, period, position)
+    {
+        var boundary = instance.boundariesByDate[rootDate];
+
+        boundary.removePeriod(position, period);
+
+        if (boundary[position].length === 0) {
+            delete instance.boundariesByDate[rootDate];
+
+            for (var i=0; i<instance.boundaries.length; i++) {
+                if (instance.boundaries[i].rootDate == rootDate) {
+                    instance.boundaries.splice(i, 1);
+                    break;
+                }
+            }
+        }
     };
 
 
@@ -93,10 +131,16 @@ module.exports = function Era()
         instance.sortBoundaries();
         var Period = require('./period');
 
-        var boundary, openStatus = false, lastDate = null, flattenedEra = new Era(), period;
+        var boundary,
+            openStatus = false,
+            lastDate = null,
+            flattenedEra = new Era(),
+            period,
+            events = [];
 
         for(var i=0; i<instance.boundaries.length; i++) {
             boundary = instance.boundaries[i];
+            Array.prototype.push.apply(events, boundary.right);
 
             // open period
             if (!openStatus && boundary.left.length === 0) { // nothing before boundary
@@ -112,7 +156,10 @@ module.exports = function Era()
                 period = new Period();
                 period.dtstart = new Date(lastDate);
                 period.dtend = new Date(boundary.rootDate);
+                period.events = events;
                 flattenedEra.addPeriod(period);
+
+                events = [];
             }
         }
 
@@ -133,13 +180,17 @@ module.exports = function Era()
         }
     };
 
+
+
     /**
      * Returns a new Era object whose value is the difference between the specified Era object and this instance.
      * @param {Era} era
-     * @return {Era}
+     * @return {bool}
      */
     this.substractEra = function(era)
     {
-
+        for(var p=0; p < era.periods.length; p++) {
+            era.periods[p]
+        }
     };
 };

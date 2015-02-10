@@ -181,16 +181,61 @@ module.exports = function Era()
     };
 
 
+    /**
+     * Returns a new Era object whose value is the difference between the specified Period object and this instance.
+     * @param {Period} period
+     * @return {Era}
+     */
+    this.substractPeriod = function(period)
+    {
+        var Period = require('./period.js');
+        var era = new Era(), newperiod;
+
+        for(var i=0; i<instance.periods.length; i++) {
+
+            if (period.dtstart.getTime() >= instance.periods[i].dtend.getTime()) {
+                era.addPeriod(instance.periods[i]);
+                continue;
+            }
+
+            if (period.dtend.getTime() <= instance.periods[i].dtstart.getTime()) {
+                era.addPeriod(instance.periods[i]);
+                continue;
+            }
+
+            if (period.dtend.getTime() > instance.periods[i].dtstart.getTime() && period.dtstart > instance.periods[i].dtstart) {
+                newperiod = new Period();
+                newperiod.dtstart = instance.periods[i].dtstart;
+                newperiod.dtend = period.dtstart;
+                era.addPeriod(newperiod);
+            }
+
+
+            if (period.dtstart.getTime() < instance.periods[i].dtend.getTime() && period.dtend < instance.periods[i].dtend) {
+                newperiod = new Period();
+                newperiod.dtstart = period.dtend;
+                newperiod.dtend = instance.periods[i].dtend;
+                era.addPeriod(newperiod);
+            }
+        }
+
+        return era;
+    };
+
 
     /**
      * Returns a new Era object whose value is the difference between the specified Era object and this instance.
      * @param {Era} era
-     * @return {bool}
+     * @return {Era}
      */
     this.substractEra = function(era)
     {
-        //for(var p=0; p < era.periods.length; p++) {
-        //    era.periods[p];
-        //}
+        var processEra = instance;
+
+        for(var p=0; p < era.periods.length; p++) {
+            processEra = instance.substractPeriod(era.periods[p]);
+        }
+
+        return processEra;
     };
 };

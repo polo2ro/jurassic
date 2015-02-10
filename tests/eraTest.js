@@ -51,5 +51,54 @@ describe('Era', function() {
             assert.equal(1, flattenedEra.periods.length);
 
         });
+
+
+
+
+        it('substract periods', function() {
+            var era = new jurassic.Era();
+
+            var p1 = new jurassic.Period();
+            p1.dtstart = new Date(2015, 1, 1);
+            p1.dtend = new Date(2015, 1, 7);
+
+            var p2 = new jurassic.Period();
+            p2.dtstart = new Date(2015, 1, 5);
+            p2.dtend = new Date(2015, 1, 6);
+
+            var p3 = new jurassic.Period();
+            p3.dtstart = new Date(2015, 1, 6);
+            p3.dtend = new Date(2015, 1, 7);
+
+            era.addPeriod(p1);
+            var newEra1 = era.substractPeriod(p2);
+            assert.equal(2, newEra1.periods.length);
+            assert.equal(5, newEra1.periods[0].dtend.getDate());
+            assert.equal(6, newEra1.periods[1].dtstart.getDate());
+
+            var newEra2 = era.substractPeriod(p3);
+            assert.equal(1, newEra2.periods.length);
+        });
+
+
+
+        it('substract era', function() {
+            var era1 = new jurassic.Era();
+            var era2 = new jurassic.Era();
+
+            var p1 = new jurassic.Period();
+            p1.dtstart = new Date(2015, 1, 1);
+            p1.dtend = new Date(2015, 1, 7);
+
+            var p2 = new jurassic.Period();
+            p2.dtstart = new Date(2015, 1, 5);
+            p2.dtend = new Date(2015, 1, 6);
+
+            era1.addPeriod(p1);
+            era2.addPeriod(p2);
+
+            var newEra1 = era1.substractEra(era2);
+            assert.equal(2, newEra1.periods.length);
+        });
     });
 });

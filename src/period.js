@@ -24,8 +24,4 @@ module.exports = function Period()
 
     var instance = this;
 
-    this.test = function()
-    {
-
-    };
 };

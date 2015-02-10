@@ -100,5 +100,25 @@ describe('Era', function() {
             var newEra1 = era1.substractEra(era2);
             assert.equal(2, newEra1.periods.length);
         });
+
+
+        it('Remove period by dates', function() {
+            var era1 = new jurassic.Era();
+
+
+            var p1 = new jurassic.Period();
+            p1.dtstart = new Date(2015, 1, 1);
+            p1.dtend = new Date(2015, 1, 7);
+
+            var p2 = new jurassic.Period();
+            p2.dtstart = new Date(2015, 1, 1);
+            p2.dtend = new Date(2015, 1, 7);
+
+            era1.addPeriod(p1);
+            era1.removePeriod(p2);
+
+            assert.equal(0, era1.periods.length);
+
+        });
     });
 });

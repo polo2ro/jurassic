@@ -55,7 +55,7 @@ describe('Era', function() {
 
 
 
-        it('substract periods', function() {
+        it('substract period', function() {
             var era = new jurassic.Era();
 
             var p1 = new jurassic.Period();
@@ -82,7 +82,7 @@ describe('Era', function() {
 
 
 
-        it('substract era', function() {
+        it('substract era with one period', function() {
             var era1 = new jurassic.Era();
             var era2 = new jurassic.Era();
 
@@ -100,6 +100,43 @@ describe('Era', function() {
             var newEra1 = era1.substractEra(era2);
             assert.equal(2, newEra1.periods.length);
         });
+
+
+        it('substract era with 2 periods on hours', function() {
+            var era1 = new jurassic.Era();
+            var era2 = new jurassic.Era();
+
+            var p1 = new jurassic.Period();
+            p1.dtstart = new Date(2015, 1, 2, 7, 0, 0);
+            p1.dtend = new Date(2015, 1, 2, 9, 0, 1);
+
+
+            var p2 = new jurassic.Period();
+            p2.dtstart = new Date(2015, 1, 2, 6, 0, 0);
+            p2.dtend = new Date(2015, 1, 2, 10, 30, 0);
+
+            var p3 = new jurassic.Period();
+            p3.dtstart = new Date(2015, 1, 2, 8, 0, 0);
+            p3.dtend = new Date(2015, 1, 2, 9, 0, 0);
+
+            var p4 = new jurassic.Period();
+            p4.dtstart = new Date(2015, 1, 2, 10, 0, 0);
+            p4.dtend = new Date(2015, 1, 2, 10, 10, 0);
+
+
+            era1.addPeriod(p1);
+            era1.addPeriod(p2);
+            era2.addPeriod(p3);
+            era2.addPeriod(p4);
+
+            var newEra = era1.substractEra(era2);
+            console.log(newEra.periods);
+
+            assert.equal(5, newEra.periods.length);
+
+
+        });
+
 
 
         it('Remove period by dates', function() {

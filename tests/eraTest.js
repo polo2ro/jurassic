@@ -5,7 +5,7 @@ var jurassic = require('../src/jurassic');
 
 
 describe('Era', function() {
-    describe('getFlattenedEra()', function() {
+    describe('addPeriod()', function() {
 
         it('add one boundary for two similar dates', function() {
 
@@ -27,7 +27,10 @@ describe('Era', function() {
             assert.equal(7, era.boundaries[1].rootDate.getDate());
             assert.equal(8, era.boundaries[2].rootDate.getDate());
         });
+    });
 
+
+    describe('getFlattenedEra()', function() {
 
         it('should flatten overlapped periods', function() {
 
@@ -52,10 +55,13 @@ describe('Era', function() {
 
         });
 
+    });
 
 
+    describe('substractPeriod()', function() {
 
-        it('substract period', function() {
+
+        it('substract period with days', function() {
             var era = new jurassic.Era();
 
             var p1 = new jurassic.Period();
@@ -81,6 +87,10 @@ describe('Era', function() {
         });
 
 
+    });
+
+
+    describe('substractEra()', function() {
 
         it('substract era with one period', function() {
             var era1 = new jurassic.Era();
@@ -130,14 +140,42 @@ describe('Era', function() {
             era2.addPeriod(p4);
 
             var newEra = era1.substractEra(era2);
-            console.log(newEra.periods);
-
             assert.equal(5, newEra.periods.length);
-
-
         });
 
 
+        it('substract era with overlapped periods', function() {
+            var era1 = new jurassic.Era();
+            var era2 = new jurassic.Era();
+
+            var p1 = new jurassic.Period();
+            p1.dtstart = new Date(2015, 1, 2, 7, 0, 0);
+            p1.dtend = new Date(2015, 1, 2, 9, 0, 1);
+
+            var p3 = new jurassic.Period();
+            p3.dtstart = new Date(2015, 1, 2, 8, 0, 0);
+            p3.dtend = new Date(2015, 1, 2, 9, 0, 0);
+
+            var p4 = new jurassic.Period();
+            p4.dtstart = new Date(2015, 1, 2, 8, 30, 0);
+            p4.dtend = new Date(2015, 1, 2, 10, 10, 0);
+
+
+            era1.addPeriod(p1);
+            era2.addPeriod(p3);
+            era2.addPeriod(p4);
+
+            var newEra = era1.substractEra(era2);
+            assert.equal(1, newEra.periods.length);
+            assert.equal(8, newEra.periods[0].dtend.getHours());
+            assert.equal(0, newEra.periods[0].dtend.getMinutes());
+        });
+
+
+    });
+
+
+    describe('removePeriod()', function() {
 
         it('Remove period by dates', function() {
             var era1 = new jurassic.Era();
@@ -155,7 +193,7 @@ describe('Era', function() {
             era1.removePeriod(p2);
 
             assert.equal(0, era1.periods.length);
-
+            assert.equal(0, era1.boundaries.length);
         });
     });
 });

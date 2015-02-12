@@ -45,7 +45,9 @@ module.exports = function Era()
 
     };
 
-
+    /**
+     * Remove a period from era using dates only
+     */
     this.removePeriod = function(period)
     {
         for (var i=0; i<instance.periods.length; i++) {
@@ -54,6 +56,9 @@ module.exports = function Era()
                 break;
             }
         }
+
+        instance.removePeriodBoundary(period.dtstart, period, 'right');
+        instance.removePeriodBoundary(period.dtend, period, 'left');
     };
 
 
@@ -233,7 +238,7 @@ module.exports = function Era()
         var processEra = instance;
 
         for(var p=0; p < era.periods.length; p++) {
-            processEra = instance.substractPeriod(era.periods[p]);
+            processEra = processEra.substractPeriod(era.periods[p]);
         }
 
         return processEra;

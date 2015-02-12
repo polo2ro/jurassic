@@ -32,7 +32,7 @@ describe('Era', function() {
 
     describe('getFlattenedEra()', function() {
 
-        it('should flatten overlapped periods', function() {
+        it('Flatten overlapped periods', function() {
 
             var era = new jurassic.Era();
 
@@ -43,6 +43,30 @@ describe('Era', function() {
             var p2 = new jurassic.Period();
             p2.dtstart = new Date(2015, 1, 6);
             p2.dtend = new Date(2015, 1, 8);
+
+            era.addPeriod(p1);
+            era.addPeriod(p2);
+
+            assert.equal(2, era.periods.length);
+
+            var flattenedEra = era.getFlattenedEra();
+
+            assert.equal(1, flattenedEra.periods.length);
+
+        });
+
+
+        it('Merge sibblings periods', function() {
+
+            var era = new jurassic.Era();
+
+            var p1 = new jurassic.Period();
+            p1.dtstart = new Date(2015, 1, 1, 0, 0, 0);
+            p1.dtend = new Date(2015, 1, 7, 5, 4, 30);
+
+            var p2 = new jurassic.Period();
+            p2.dtstart = new Date(2015, 1, 7, 5, 4, 30);
+            p2.dtend = new Date(2015, 1, 8, 0, 0, 0);
 
             era.addPeriod(p1);
             era.addPeriod(p2);
@@ -172,6 +196,30 @@ describe('Era', function() {
         });
 
 
+    });
+
+
+    describe('intersectPeriod()', function() {
+
+        it('intersect overlapped periods', function() {
+            var era1 = new jurassic.Era();
+
+
+            var p1 = new jurassic.Period();
+            p1.dtstart = new Date(2015, 1, 1);
+            p1.dtend = new Date(2015, 1, 7);
+
+            var p2 = new jurassic.Period();
+            p2.dtstart = new Date(2015, 1, 5);
+            p2.dtend = new Date(2015, 1, 8);
+
+            era1.addPeriod(p1);
+            era2 = era1.intersectPeriod(p2);
+
+            assert.equal(1, era2.periods.length);
+            assert.equal(5, era2.periods[0].dtstart.getDate());
+            assert.equal(7, era2.periods[0].dtend.getDate());
+        });
     });
 
 

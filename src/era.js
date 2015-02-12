@@ -243,4 +243,46 @@ module.exports = function Era()
 
         return processEra;
     };
+
+
+    /**
+     * Get the intesection of the era with a period
+     * @param {Period} period
+     * @return {Era}
+     */
+    this.intersectPeriod = function(period)
+    {
+        var Period = require('./period.js');
+        var era = new Era(), newperiod;
+
+        for(var i=0; i<instance.periods.length; i++) {
+
+            if (period.dtstart.getTime() >= instance.periods[i].dtend.getTime()) {
+                continue;
+            }
+
+            if (period.dtend.getTime() <= instance.periods[i].dtstart.getTime()) {
+                continue;
+            }
+
+            newperiod = new Period();
+
+            if (period.dtstart.getTime() > instance.periods[i].dtstart.getTime()) {
+                newperiod.dtstart = new Date(period.dtstart);
+            } else {
+                newperiod.dtstart = new Date(instance.periods[i].dtstart);
+            }
+
+
+            if (period.dtend.getTime() < instance.periods[i].dtend.getTime()) {
+                newperiod.dtend = new Date(period.dtend);
+            } else {
+                newperiod.dtend = new Date(instance.periods[i].dtend);
+            }
+
+            era.addPeriod(newperiod);
+        }
+
+        return era;
+    };
 };

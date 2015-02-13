@@ -1,11 +1,10 @@
-
+/*jslint node: true */
 
 /**
  * Representation of a list of periods
  * periods must not be overlapped in an Era object
  */
-module.exports = function Era()
-{
+module.exports = function Era() {
     'use strict';
 
     /**
@@ -37,8 +36,7 @@ module.exports = function Era()
      * @var {Period} period
      * @return {Era}
      */
-    this.addPeriod = function(period)
-    {
+    this.addPeriod = function (period) {
         if (period.dtstart.getTime() >= period.dtend.getTime()) {
             throw new Error('Invalid period');
         }
@@ -55,9 +53,11 @@ module.exports = function Era()
      * @param {Period} period
      * @return {Era}
      */
-    this.removePeriod = function(period)
-    {
-        for (var i=0; i<instance.periods.length; i++) {
+    this.removePeriod = function (period) {
+
+        var i;
+
+        for (i = 0; i < instance.periods.length; i++) {
             if(instance.periods[i].dtstart.getTime() === period.dtstart.getTime() && instance.periods[i].dtend.getTime() === period.dtend.getTime()) {
                 instance.periods.splice(i, 1);
                 break;
@@ -79,7 +79,7 @@ module.exports = function Era()
      * @param {Period} period
      * @param {string} position
      */
-    this.addPeriodBoundary = function(rootDate, period, position)
+    this.addPeriodBoundary = function (rootDate, period, position)
     {
         if (instance.boundariesByDate[rootDate] === undefined) {
 
@@ -100,7 +100,7 @@ module.exports = function Era()
      * @param {Period} period
      * @param {string} position
      */
-    this.removePeriodBoundary = function(rootDate, period, position)
+    this.removePeriodBoundary = function (rootDate, period, position)
     {
         var boundary = instance.boundariesByDate[rootDate];
 

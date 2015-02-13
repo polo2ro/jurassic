@@ -1,5 +1,3 @@
-
-
 /**
  * Entry point for all classes
  */

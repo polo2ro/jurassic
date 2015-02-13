@@ -35,18 +35,25 @@ module.exports = function Era()
     /**
      * Add a period to Era
      * @var {Period} period
-     *
+     * @return {Era}
      */
     this.addPeriod = function(period)
     {
+        if (period.dtstart.getTime() >= period.dtend.getTime()) {
+            throw new Error('Invalid period');
+        }
+
         instance.periods.push(period);
         instance.addPeriodBoundary(period.dtstart, period, 'right');
         instance.addPeriodBoundary(period.dtend, period, 'left');
 
+        return instance;
     };
 
     /**
      * Remove a period from era using dates only
+     * @param {Period} period
+     * @return {Era}
      */
     this.removePeriod = function(period)
     {
@@ -59,6 +66,8 @@ module.exports = function Era()
 
         instance.removePeriodBoundary(period.dtstart, period, 'right');
         instance.removePeriodBoundary(period.dtend, period, 'left');
+
+        return instance;
     };
 
 
@@ -284,5 +293,23 @@ module.exports = function Era()
         }
 
         return era;
+    };
+
+
+
+    /**
+     * Get the intesection of the specified Era object and this instance
+     * @param {Era} era
+     * @return {Era}
+     */
+    this.intersectEra = function(era)
+    {
+        var processEra = new Era();
+
+        for(var p=0; p < era.periods.length; p++) {
+            processEra.addEra(instance.intersectPeriod(era.periods[p]));
+        }
+
+        return processEra;
     };
 };

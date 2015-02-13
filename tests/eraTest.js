@@ -7,6 +7,7 @@ var jurassic = require('../src/jurassic');
 describe('Era', function() {
     describe('addPeriod()', function() {
 
+
         it('add one boundary for two similar dates', function() {
 
             var era = new jurassic.Era();
@@ -21,6 +22,26 @@ describe('Era', function() {
 
             era.addPeriod(p1);
             era.addPeriod(p2);
+
+            assert.equal(3, era.boundaries.length);
+            assert.equal(1, era.boundaries[0].rootDate.getDate());
+            assert.equal(7, era.boundaries[1].rootDate.getDate());
+            assert.equal(8, era.boundaries[2].rootDate.getDate());
+        });
+
+        it('is fluent', function() {
+
+            var era = new jurassic.Era();
+
+            var p1 = new jurassic.Period();
+            p1.dtstart = new Date(2015, 1, 1);
+            p1.dtend = new Date(2015, 1, 7);
+
+            var p2 = new jurassic.Period();
+            p2.dtstart = new Date(2015, 1, 7);
+            p2.dtend = new Date(2015, 1, 8);
+
+            era.addPeriod(p1).addPeriod(p2);
 
             assert.equal(3, era.boundaries.length);
             assert.equal(1, era.boundaries[0].rootDate.getDate());
@@ -219,6 +240,47 @@ describe('Era', function() {
             assert.equal(1, era2.periods.length);
             assert.equal(5, era2.periods[0].dtstart.getDate());
             assert.equal(7, era2.periods[0].dtend.getDate());
+        });
+    });
+
+
+
+
+
+    describe('intersectEra()', function() {
+
+        it('intersect overlapped periods', function() {
+            var era1 = new jurassic.Era();
+            var era2 = new jurassic.Era();
+
+
+            var p1 = new jurassic.Period();
+            p1.dtstart = new Date(2015, 1, 1);
+            p1.dtend = new Date(2015, 1, 4);
+
+            var p2 = new jurassic.Period();
+            p2.dtstart = new Date(2015, 1, 5);
+            p2.dtend = new Date(2015, 1, 8);
+
+            var p3 = new jurassic.Period();
+            p3.dtstart = new Date(2015, 1, 2);
+            p3.dtend = new Date(2015, 1, 3);
+
+            var p4 = new jurassic.Period();
+            p4.dtstart = new Date(2015, 1, 4);
+            p4.dtend = new Date(2015, 1, 6);
+
+
+            era1.addPeriod(p1).addPeriod(p2);
+            era2.addPeriod(p3).addPeriod(p4);
+
+            var intersection = era1.intersectEra(era2);
+
+            assert.equal(2, intersection.periods.length);
+            assert.equal(2, intersection.periods[0].dtstart.getDate());
+            assert.equal(3, intersection.periods[0].dtend.getDate());
+            assert.equal(5, intersection.periods[1].dtstart.getDate());
+            assert.equal(6, intersection.periods[1].dtend.getDate());
         });
     });
 

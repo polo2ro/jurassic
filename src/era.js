@@ -192,6 +192,8 @@ module.exports = function Era() {
         for(var i=0; i<era.periods.length; i++) {
             instance.addPeriod(era.periods[i]);
         }
+
+        return instance;
     };
 
 

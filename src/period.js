@@ -106,11 +106,16 @@ module.exports = function Period()
      * @param {Date} halfday  half-day hour
      * @return {Number}
      */
-    instance.getDays = function(halfday)
+    instance.getBusinessDays = function(halfday)
     {
 
         if (null === instance.dtstart || null === instance.dtend) {
             throw new Error('invalid period');
+        }
+
+        if (undefined === halfday) {
+            halfday = new Date();
+            halfday.setHours(12, 0, 0, 0);
         }
 
         var days = 0;

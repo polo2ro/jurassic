@@ -1,7 +1,7 @@
 {
   "name": "jurassic",
   "description": "A javascript library for manipulating periods.",
-  "version": "0.11.0",
+  "version": "0.11.1",
   "repository": {
     "type": "git",
     "url": "git://github.com/polo2ro/jurassic.git"

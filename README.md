@@ -59,4 +59,12 @@ event2.dtend = new Date(2016,0,1);
 
 var era = new jurassic.Era();
 era.addPeriod(event1).addPeriod(event2);
+
+
+
+# Period
+
+Period.getDays
+--------------
+get the number of days in period with a precision of 0.5 days
 ```

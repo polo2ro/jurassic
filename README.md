@@ -38,6 +38,7 @@ Returns a new Era object whose value is the difference between the specified Era
 Era.intersectPeriod
 -------------------
 Get the intesection of the era with a period. Accept a period object as parameter. This method return an Era object (a list of periods)
+the properties from the periods stored in the era object will be retained in the new periods produced by this method.
 
 Era.intersectEra
 ----------------

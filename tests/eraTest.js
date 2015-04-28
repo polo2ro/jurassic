@@ -236,7 +236,7 @@ describe('Era', function () {
 
     describe('intersectPeriod()', function () {
 
-        it('intersect overlapped periods', function () {
+        it('intersect overlapped periods, without copy of properties', function () {
             var era1 = new jurassic.Era(),
                 p1 = new jurassic.Period(),
                 p2 = new jurassic.Period(),
@@ -244,18 +244,47 @@ describe('Era', function () {
 
             p1.dtstart = new Date(2015, 1, 1);
             p1.dtend = new Date(2015, 1, 7);
+            p1.summary = 'My custom event';
 
             p2.dtstart = new Date(2015, 1, 5);
             p2.dtend = new Date(2015, 1, 8);
+            p2.summary = 'and another one';
 
             era1.addPeriod(p1);
-            era2 = era1.intersectPeriod(p2);
+            era2 = era1.intersectPeriod(p2, false);
 
             assert.equal(1, era2.periods.length);
             assert.equal(5, era2.periods[0].dtstart.getDate());
             assert.equal(7, era2.periods[0].dtend.getDate());
+            assert.equal(undefined, era2.periods[0].summary);
+        });
+
+
+        it('intersect overlapped periods, properties from the main era must be preserved', function () {
+            var era1 = new jurassic.Era(),
+                p1 = new jurassic.Period(),
+                p2 = new jurassic.Period(),
+                era2;
+
+            p1.dtstart = new Date(2015, 1, 1);
+            p1.dtend = new Date(2015, 1, 7);
+            p1.summary = 'My custom event';
+
+            p2.dtstart = new Date(2015, 1, 5);
+            p2.dtend = new Date(2015, 1, 8);
+            p2.summary = 'and another one';
+
+            era1.addPeriod(p1);
+            era2 = era1.intersectPeriod(p2, true);
+
+            assert.equal(1, era2.periods.length);
+            assert.equal(5, era2.periods[0].dtstart.getDate());
+            assert.equal(7, era2.periods[0].dtend.getDate());
+            assert.equal('My custom event', era2.periods[0].summary);
         });
     });
+
+
 
 
 

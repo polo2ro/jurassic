@@ -257,12 +257,34 @@ module.exports = function Era() {
 
 
     /**
+     * Copy properties from one period to another
+     * if property allready exists, nothing is modified
+     * @param {Period} from
+     * @param {Period} to
+     *
+     */
+    this.copyProperties = function(from, to)
+    {
+        for(var prop in from) {
+            if (to[prop] === undefined) {
+                to[prop] = from[prop];
+            }
+        }
+    };
+
+
+    /**
      * Get the intesection of the era with a period
      * @param {Period} period
+     * @param {Boolean} copyProperties      Copy properties of the era period into the new period (default true)
      * @return {Era}
      */
-    this.intersectPeriod = function(period)
+    this.intersectPeriod = function(period, copyProperties)
     {
+        if (undefined === copyProperties) {
+            copyProperties = true;
+        }
+
         var Period = require('./period.js');
         var era = new Era(), newperiod;
 
@@ -289,6 +311,10 @@ module.exports = function Era() {
                 newperiod.dtend = new Date(period.dtend);
             } else {
                 newperiod.dtend = new Date(instance.periods[i].dtend);
+            }
+
+            if (copyProperties) {
+                instance.copyProperties(instance.periods[i], newperiod);
             }
 
             era.addPeriod(newperiod);

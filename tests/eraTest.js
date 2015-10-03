@@ -56,6 +56,20 @@ describe('Era', function () {
             assert.equal(7, era.boundaries[1].rootDate.getDate());
             assert.equal(8, era.boundaries[2].rootDate.getDate());
         });
+
+
+        it('add period from object', function() {
+            var era = new jurassic.Era();
+            era.addPeriod({
+                dtstart: new Date(2015, 1, 1),
+                dtend: new Date(2015, 1, 7),
+                summary: 'test'
+            });
+
+            assert.equal(1, era.periods.length);
+            assert.equal(true, era.periods[0] instanceof jurassic.Period);
+            assert.equal('test', era.periods[0].summary);
+        });
     });
 
 
@@ -348,4 +362,6 @@ describe('Era', function () {
             assert.equal(0, era1.boundaries.length);
         });
     });
+
+
 });

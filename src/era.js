@@ -28,15 +28,40 @@ module.exports = function Era() {
     var instance = this;
 
 
+    /**
+     * Create period from event object
+     * @param {Object}  obj     expanded event
+     * @return {Period}
+     */
+    this.createPeriod = function(obj)
+    {
+        var Period = require('./period');
 
+        var p = new Period();
+        for(var prop in obj) {
+            if (obj.hasOwnProperty(prop)) {
+                p[prop] = obj[prop];
+            }
+        }
+        return p;
+    };
 
 
     /**
      * Add a period to Era
-     * @var {Period} period
+     * If the given object is not a Period instance, a new Period instance will be creted from it
+     *
+     * @var {Period|object} period
      * @return {Era}
      */
-    this.addPeriod = function (period) {
+    this.addPeriod = function(period) {
+
+        var Period = require('./period');
+
+        if (!(period instanceof Period)) {
+            period = this.createPeriod(period);
+        }
+
         if (period.dtstart.getTime() >= period.dtend.getTime()) {
             throw new Error('Invalid period');
         }
@@ -53,7 +78,7 @@ module.exports = function Era() {
      * @param {Period} period
      * @return {Era}
      */
-    this.removePeriod = function (period) {
+    this.removePeriod = function(period) {
 
         var i;
 
@@ -79,7 +104,7 @@ module.exports = function Era() {
      * @param {Period} period
      * @param {string} position
      */
-    this.addPeriodBoundary = function (rootDate, period, position)
+    this.addPeriodBoundary = function(rootDate, period, position)
     {
         if (instance.boundariesByDate[rootDate] === undefined) {
 
@@ -100,7 +125,7 @@ module.exports = function Era() {
      * @param {Period} period
      * @param {string} position
      */
-    this.removePeriodBoundary = function (rootDate, period, position)
+    this.removePeriodBoundary = function(rootDate, period, position)
     {
         var boundary = instance.boundariesByDate[rootDate];
 

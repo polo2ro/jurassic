@@ -206,20 +206,33 @@ module.exports = function Era() {
     };
 
 
+    /**
+     * Add all periods to the current Era object
+     * @param {Array} periods
+     * @return {Era}
+     */
+    this.addPeriods = function(periods)
+    {
+        for(var i=0; i<periods.length; i++) {
+            instance.addPeriod(periods[i]);
+        }
+
+        return instance;
+    };
+
 
     /**
-     * Returns a new Era object whose value is the sum of the specified Era object and this instance.
+     * Add all era periods to the current Era object
      * @param {Era} era
      * @return {Era}
      */
     this.addEra = function(era)
     {
-        for(var i=0; i<era.periods.length; i++) {
-            instance.addPeriod(era.periods[i]);
-        }
-
-        return instance;
+        return this.addPeriods(era.periods);
     };
+
+
+
 
 
     /**

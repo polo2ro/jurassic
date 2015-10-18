@@ -37,12 +37,24 @@ module.exports = function Era() {
     {
         var Period = require('./period');
 
+
+
         var p = new Period();
         for(var prop in obj) {
             if (obj.hasOwnProperty(prop)) {
                 p[prop] = obj[prop];
             }
         }
+
+
+        if (!(p.dtstart instanceof Date)) {
+            p.dtstart = new Date(p.dtstart);
+        }
+
+        if (!(p.dtend instanceof Date)) {
+            p.dtend = new Date(p.dtend);
+        }
+
         return p;
     };
 

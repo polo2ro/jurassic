@@ -70,6 +70,22 @@ describe('Era', function () {
             assert.equal(true, era.periods[0] instanceof jurassic.Period);
             assert.equal('test', era.periods[0].summary);
         });
+
+
+        it('add period from object with string dates', function() {
+            var era = new jurassic.Era();
+            era.addPeriod({
+                dtstart: 'Sun Mar 29 2015 00:00:00 GMT+0100 (CET)',
+                dtend: 'Sun Mar 29 2015 08:00:00 GMT+0100 (CET)',
+                summary: 'test'
+            });
+
+            assert.equal(1, era.periods.length);
+            assert.equal(true, era.periods[0] instanceof jurassic.Period);
+            assert.equal('test', era.periods[0].summary);
+            assert.equal(true, era.periods[0].dtstart instanceof Date);
+            assert.equal(true, era.periods[0].dtend instanceof Date);
+        });
     });
 
 

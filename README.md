@@ -26,12 +26,12 @@ Era.addEra
 ----------
 Returns a new Era object whose value is the sum of the specified Era object and this instance.
 
-Era.substractPeriod
+Era.subtractPeriod
 -------------------
 Returns a new Era object whose value is the difference between the specified Period object and this instance.
 Accept a period object as parameter
 
-Era.substractEra
+Era.subtractEra
 ----------------
 Returns a new Era object whose value is the difference between the specified Era object and this instance.
 

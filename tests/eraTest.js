@@ -6,14 +6,14 @@ var jurassic = require('../src/jurassic');
 
 
 
-describe('Era', function () {
+describe('Era', function() {
 
     'use strict';
 
-    describe('addPeriod()', function () {
+    describe('addPeriod()', function() {
 
 
-        it('add one boundary for two similar dates', function () {
+        it('add one boundary for two similar dates', function() {
 
             var era, p1, p2;
 
@@ -36,7 +36,7 @@ describe('Era', function () {
             assert.equal(8, era.boundaries[2].rootDate.getDate());
         });
 
-        it('is fluent', function () {
+        it('is fluent', function() {
 
             var era, p1, p2;
             era = new jurassic.Era();
@@ -89,9 +89,9 @@ describe('Era', function () {
     });
 
 
-    describe('getFlattenedEra()', function () {
+    describe('getFlattenedEra()', function() {
 
-        it('Flatten overlapped periods', function () {
+        it('Flatten overlapped periods', function() {
             var era, p1, p2, flattenedEra;
 
             era = new jurassic.Era();
@@ -116,7 +116,7 @@ describe('Era', function () {
         });
 
 
-        it('Merge sibblings periods', function () {
+        it('Merge sibblings periods', function() {
 
             var era, p1, p2;
 
@@ -141,10 +141,10 @@ describe('Era', function () {
     });
 
 
-    describe('substractPeriod()', function () {
+    describe('subtractPeriod()', function() {
 
 
-        it('substract period with days', function () {
+        it('substract period with days', function() {
             var p1, p2, p3, newEra1, newEra2, era = new jurassic.Era();
 
             p1 = new jurassic.Period();
@@ -160,12 +160,12 @@ describe('Era', function () {
             p3.dtend = new Date(2015, 1, 7);
 
             era.addPeriod(p1);
-            newEra1 = era.substractPeriod(p2);
+            newEra1 = era.subtractPeriod(p2);
             assert.equal(2, newEra1.periods.length);
             assert.equal(5, newEra1.periods[0].dtend.getDate());
             assert.equal(6, newEra1.periods[1].dtstart.getDate());
 
-            newEra2 = era.substractPeriod(p3);
+            newEra2 = era.subtractPeriod(p3);
             assert.equal(1, newEra2.periods.length);
         });
 
@@ -173,9 +173,9 @@ describe('Era', function () {
     });
 
 
-    describe('substractEra()', function () {
+    describe('subtractEra()', function() {
 
-        it('substract era with one period', function () {
+        it('substract era with one period', function() {
             var era1, era2, p1, p2, newEra1;
 
             era1 = new jurassic.Era();
@@ -192,12 +192,12 @@ describe('Era', function () {
             era1.addPeriod(p1);
             era2.addPeriod(p2);
 
-            newEra1 = era1.substractEra(era2);
+            newEra1 = era1.subtractEra(era2);
             assert.equal(2, newEra1.periods.length);
         });
 
 
-        it('substract era with 2 periods on hours', function () {
+        it('substract era with 2 periods on hours', function() {
             var era1 = new jurassic.Era(),
                 era2 = new jurassic.Era(),
                 p1,
@@ -228,11 +228,11 @@ describe('Era', function () {
             era2.addPeriod(p3);
             era2.addPeriod(p4);
 
-            assert.equal(5, era1.substractEra(era2).periods.length);
+            assert.equal(5, era1.subtractEra(era2).periods.length);
         });
 
 
-        it('substract era with overlapped periods', function () {
+        it('substract era with overlapped periods', function() {
             var era1 = new jurassic.Era(),
                 era2 = new jurassic.Era(),
                 p1 = new jurassic.Period(),
@@ -254,19 +254,70 @@ describe('Era', function () {
             era2.addPeriod(p3);
             era2.addPeriod(p4);
 
-            newEra = era1.substractEra(era2);
+            newEra = era1.subtractEra(era2);
             assert.equal(1, newEra.periods.length);
             assert.equal(8, newEra.periods[0].dtend.getHours());
             assert.equal(0, newEra.periods[0].dtend.getMinutes());
         });
 
 
+        function getLargeEra()
+        {
+            var large = new jurassic.Era();
+
+            function addDay(day) {
+                var am = {
+                    dtstart: new Date(day),
+                    dtend: new Date(day)
+                };
+
+                var pm = {
+                    dtstart: new Date(day),
+                    dtend: new Date(day)
+                };
+
+                am.dtstart.setHours(8);
+                am.dtend.setHours(12);
+
+                pm.dtstart.setHours(14);
+                pm.dtend.setHours(18);
+
+                large.addPeriod(am);
+                large.addPeriod(pm);
+            }
+
+
+            var day = new Date(2015,0,1);
+
+
+            for(var i=0; i<365; i++) {
+                addDay(day);
+                day.setDate(1+day.getDate());
+            }
+
+            return large;
+        }
+
+
+
+        it('substract era on large amount of periods, for work on speed optimizations', function() {
+            var unavailableEra = new jurassic.Era();
+            unavailableEra.addPeriod({
+                dtstart: new Date(2015,0,1),
+                dtend: new Date(2016,0,1)
+            });
+            var newEra = unavailableEra.subtractEra(getLargeEra());
+
+            assert.equal(731, newEra.periods.length);
+        });
+
+
     });
 
 
-    describe('intersectPeriod()', function () {
+    describe('intersectPeriod()', function() {
 
-        it('intersect overlapped periods, without copy of properties', function () {
+        it('intersect overlapped periods, without copy of properties', function() {
             var era1 = new jurassic.Era(),
                 p1 = new jurassic.Period(),
                 p2 = new jurassic.Period(),
@@ -290,7 +341,7 @@ describe('Era', function () {
         });
 
 
-        it('intersect overlapped periods, properties from the main era must be preserved', function () {
+        it('intersect overlapped periods, properties from the main era must be preserved', function() {
             var era1 = new jurassic.Era(),
                 p1 = new jurassic.Period(),
                 p2 = new jurassic.Period(),
@@ -320,9 +371,9 @@ describe('Era', function () {
 
 
 
-    describe('intersectEra()', function () {
+    describe('intersectEra()', function() {
 
-        it('intersect overlapped periods', function () {
+        it('intersect overlapped periods', function() {
             var era1 = new jurassic.Era(),
                 era2 = new jurassic.Era(),
                 p1 = new jurassic.Period(),
@@ -358,9 +409,9 @@ describe('Era', function () {
     });
 
 
-    describe('removePeriod()', function () {
+    describe('removePeriod()', function() {
 
-        it('Remove period by dates', function () {
+        it('Remove period by dates', function() {
             var era1 = new jurassic.Era(),
                 p1 = new jurassic.Period(),
                 p2 = new jurassic.Period();

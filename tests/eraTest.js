@@ -141,7 +141,7 @@ describe('Era', function() {
     });
 
 
-    describe('subtractPeriod()', function() {
+    describe('getEraWithoutPeriod()', function() {
 
 
         it('substract period with days', function() {
@@ -160,12 +160,12 @@ describe('Era', function() {
             p3.dtend = new Date(2015, 1, 7);
 
             era.addPeriod(p1);
-            newEra1 = era.subtractPeriod(p2);
+            newEra1 = era.getEraWithoutPeriod(p2);
             assert.equal(2, newEra1.periods.length);
             assert.equal(5, newEra1.periods[0].dtend.getDate());
             assert.equal(6, newEra1.periods[1].dtstart.getDate());
 
-            newEra2 = era.subtractPeriod(p3);
+            newEra2 = era.getEraWithoutPeriod(p3);
             assert.equal(1, newEra2.periods.length);
         });
 
@@ -299,7 +299,7 @@ describe('Era', function() {
         }
 
 
-
+        /*
         it('substract era on large amount of periods, for work on speed optimizations', function() {
             var unavailableEra = new jurassic.Era();
             unavailableEra.addPeriod({
@@ -310,7 +310,7 @@ describe('Era', function() {
 
             assert.equal(731, newEra.periods.length);
         });
-
+        */
 
     });
 

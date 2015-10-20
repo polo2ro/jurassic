@@ -131,4 +131,20 @@ Period.prototype.getBusinessDays = function(halfday)
 };
 
 
+/**
+ * Copy properties from one period to another
+ * if property allready exists, nothing is modified
+ * @param {Period} fromPeriod
+ *
+ */
+Period.prototype.copyProperties = function(fromPeriod)
+{
+    for(var prop in fromPeriod) {
+        if (fromPeriod.hasOwnProperty(prop) && this[prop] === undefined) {
+            this[prop] = fromPeriod[prop];
+        }
+    }
+};
+
+
 module.exports = Period;

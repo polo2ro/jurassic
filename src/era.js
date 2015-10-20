@@ -247,10 +247,11 @@ Era.prototype.addEra = function(era)
 
 /**
  * Returns a new Era object whose value is the difference between the specified Period object and this instance.
+ * warning, slow
  * @param {Period} period
  * @return {Era}
  */
-Era.prototype.subtractPeriod = function(period)
+Era.prototype.getEraWithoutPeriod = function(period)
 {
     var Period = require('./period.js');
     var era = new Era(), newperiod;
@@ -286,9 +287,88 @@ Era.prototype.subtractPeriod = function(period)
     return era;
 };
 
+/**
+ * Remove period from the current era
+ * boundaries must be sorted
+ *
+ * @todo test compatibility with getEraWithoutPeriod
+ *
+ * @param {Period} period
+ * @return {Era}
+ */
+Era.prototype.subtractPeriod = function(period)
+{
+    var era = this;
+    var Period = require('./period.js');
+
+    function filterFullPeriods(boundPeriod)
+    {
+        return (boundPeriod.dtend >= period.dtend);
+    }
+
+    function splitPeriods(boundPeriod)
+    {
+        var end = new Period();
+        end.copyProperties(boundPeriod);
+        end.dtstart = period.dtend;
+
+        boundPeriod.dtend = period.dtstart;
+    }
+
+    function updateEnd(boundPeriod)
+    {
+        if (boundPeriod.dtstart >= period.dtstart && boundPeriod.dtend <= period.dtend) {
+            era.removePeriod(boundPeriod);
+            return;
+        }
+
+        era.removePeriodBoundary(boundPeriod.dtend, boundPeriod, 'right');
+        boundPeriod.dtend = period.dtstart;
+        era.addPeriodBoundary(boundPeriod.dtend, boundPeriod, 'right');
+    }
+
+
+    function updateStart(boundPeriod)
+    {
+        if (boundPeriod.dtstart >= period.dtstart && boundPeriod.dtend <= period.dtend) {
+            era.removePeriod(boundPeriod);
+            return;
+        }
+
+        era.removePeriodBoundary(boundPeriod.dtstart, boundPeriod, 'left');
+        boundPeriod.dtstart = period.dtend;
+        era.addPeriodBoundary(boundPeriod.dtstart, boundPeriod, 'left');
+    }
+
+
+    // get all boundaries inside period
+    var boundary;
+    for(var i=0; i<this.boundaries.length; i++) {
+        boundary = this.boundaries[i];
+
+        if (boundary.rootDate < period.dtstart) {
+            boundary.right.filter(filterFullPeriods).forEach(splitPeriods);
+            continue;
+        }
+
+        boundary.right.forEach(updateEnd);
+        boundary.left.forEach(updateStart);
+
+        if (boundary.rootDate > period.dtend) {
+            //end
+            return era;
+        }
+    }
+
+    return era;
+};
+
 
 /**
- * Returns a new Era object whose value is the difference between the specified Era object and this instance.
+ * Update the Era object with the difference between the specified Era object and this instance.
+ *
+ * @todo use subtractPeriod instead of getEraWithoutPeriod
+ *
  * @param {Era} era
  * @return {Era}
  */
@@ -297,28 +377,14 @@ Era.prototype.subtractEra = function(era)
     var processEra = this;
 
     for(var p=0; p < era.periods.length; p++) {
-        processEra = processEra.subtractPeriod(era.periods[p]);
+        processEra = processEra.getEraWithoutPeriod(era.periods[p]);
     }
 
     return processEra;
 };
 
 
-/**
- * Copy properties from one period to another
- * if property allready exists, nothing is modified
- * @param {Period} from
- * @param {Period} to
- *
- */
-Era.prototype.copyProperties = function(from, to)
-{
-    for(var prop in from) {
-        if (to[prop] === undefined) {
-            to[prop] = from[prop];
-        }
-    }
-};
+
 
 
 /**
@@ -362,7 +428,7 @@ Era.prototype.intersectPeriod = function(period, copyProperties)
         }
 
         if (copyProperties) {
-            this.copyProperties(this.periods[i], newperiod);
+            newperiod.copyProperties(this.periods[i]);
         }
 
         era.addPeriod(newperiod);

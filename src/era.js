@@ -140,6 +140,10 @@ Era.prototype.removePeriodBoundary = function(rootDate, period, position)
 {
     var boundary = this.boundariesByDate[rootDate];
 
+    if (undefined === boundary) {
+        throw new Error('No boundary defined for root date '+rootDate);
+    }
+
     boundary.removePeriod(position, period);
 
     if (boundary[position].length === 0) {
@@ -301,27 +305,27 @@ Era.prototype.subtractPeriod = function(period)
     var era = this;
     var Period = require('./period.js');
 
-    function filterFullPeriods(boundPeriod)
-    {
-        return (boundPeriod.dtend >= period.dtend);
-    }
-
-    function splitPeriods(boundPeriod)
-    {
-        var end = new Period();
-        end.copyProperties(boundPeriod);
-        end.dtstart = period.dtend;
-
-        boundPeriod.dtend = period.dtstart;
-    }
-
-    function updateEnd(boundPeriod)
+    function deleteCovered(boundPeriod)
     {
         if (boundPeriod.dtstart >= period.dtstart && boundPeriod.dtend <= period.dtend) {
             era.removePeriod(boundPeriod);
             return;
         }
 
+    }
+
+    function startBefore(boundPeriod)
+    {
+        return (boundPeriod.dtstart <= period.dtstart);
+    }
+
+    function endAfter(boundPeriod)
+    {
+        return (boundPeriod.dtend >= period.dtend);
+    }
+
+    function updateEnd(boundPeriod)
+    {
         era.removePeriodBoundary(boundPeriod.dtend, boundPeriod, 'right');
         boundPeriod.dtend = period.dtstart;
         era.addPeriodBoundary(boundPeriod.dtend, boundPeriod, 'right');
@@ -330,15 +334,41 @@ Era.prototype.subtractPeriod = function(period)
 
     function updateStart(boundPeriod)
     {
-        if (boundPeriod.dtstart >= period.dtstart && boundPeriod.dtend <= period.dtend) {
-            era.removePeriod(boundPeriod);
-            return;
-        }
-
         era.removePeriodBoundary(boundPeriod.dtstart, boundPeriod, 'left');
         boundPeriod.dtstart = period.dtend;
         era.addPeriodBoundary(boundPeriod.dtstart, boundPeriod, 'left');
     }
+
+    function createStartPeriod(boundPeriod)
+    {
+        var start = new Period();
+        start.copyProperties(boundPeriod);
+        start.dtend = period.dtstart;
+        era.addPeriod(start);
+
+        if (boundPeriod.dtstart < period.dtend) {
+            updateStart(boundPeriod);
+        }
+    }
+
+    function createEndPeriod(boundPeriod)
+    {
+        if (boundPeriod.dtstart > period.dtstart) {
+            // start before
+            return updateStart(boundPeriod);
+        }
+
+        var end = new Period();
+        end.copyProperties(boundPeriod);
+        end.dtstart = period.dtend;
+        era.addPeriod(end);
+
+        if (boundPeriod.dtend > period.dtstart) {
+            updateEnd(boundPeriod);
+        }
+    }
+
+
 
 
     // get all boundaries inside period
@@ -346,13 +376,22 @@ Era.prototype.subtractPeriod = function(period)
     for(var i=0; i<this.boundaries.length; i++) {
         boundary = this.boundaries[i];
 
+
+
         if (boundary.rootDate < period.dtstart) {
-            boundary.right.filter(filterFullPeriods).forEach(splitPeriods);
-            continue;
+            // check right only
+
+            boundary.right.forEach(deleteCovered);
         }
 
-        boundary.right.forEach(updateEnd);
-        boundary.left.forEach(updateStart);
+
+        // delete covered periods
+        boundary.right.forEach(deleteCovered);
+        boundary.left.forEach(deleteCovered);
+
+        boundary.left.filter(startBefore).forEach(createStartPeriod);
+        boundary.right.filter(endAfter).forEach(createEndPeriod);
+
 
         if (boundary.rootDate > period.dtend) {
             //end
@@ -374,6 +413,7 @@ Era.prototype.subtractPeriod = function(period)
  */
 Era.prototype.subtractEra = function(era)
 {
+    /*
     var processEra = this;
 
     for(var p=0; p < era.periods.length; p++) {
@@ -381,6 +421,15 @@ Era.prototype.subtractEra = function(era)
     }
 
     return processEra;
+    */
+
+    this.sortBoundaries();
+    for(var p=0; p < era.periods.length; p++) {
+        this.subtractPeriod(era.periods[p]);
+    }
+
+    return this;
+
 };
 
 

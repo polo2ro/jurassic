@@ -173,6 +173,115 @@ describe('Era', function() {
     });
 
 
+    describe('subtractPeriod()', function() {
+
+        it('with one period inside the other', function() {
+            var era1, p1, p2, newEra1;
+
+            era1 = new jurassic.Era();
+
+            p1 = new jurassic.Period();
+            p1.dtstart = new Date(2015, 1, 1);
+            p1.dtend = new Date(2015, 1, 7);
+
+            p2 = new jurassic.Period();
+            p2.dtstart = new Date(2015, 1, 5);
+            p2.dtend = new Date(2015, 1, 6);
+
+            era1.addPeriod(p1);
+
+            era1.subtractPeriod(p2);
+            assert.equal(2, era1.periods.length);
+            assert.equal(5, era1.periods[0].dtend.getDate());
+            assert.equal(6, era1.periods[1].dtstart.getDate());
+        });
+
+        it('with a period overlapping the other on left', function() {
+            var era1, p1, p2, newEra1;
+
+            era1 = new jurassic.Era();
+
+            p1 = new jurassic.Period();
+            p1.dtstart = new Date(2015, 1, 5);
+            p1.dtend = new Date(2015, 1, 7);
+
+            p2 = new jurassic.Period();
+            p2.dtstart = new Date(2015, 1, 1);
+            p2.dtend = new Date(2015, 1, 6);
+
+            era1.addPeriod(p1);
+
+            era1.subtractPeriod(p2);
+            assert.equal(1, era1.periods.length);
+            assert.equal(6, era1.periods[0].dtstart.getDate());
+        });
+
+        it('with a period overlapping the other on right', function() {
+            var era1, p1, p2, newEra1;
+
+            era1 = new jurassic.Era();
+
+            p1 = new jurassic.Period();
+            p1.dtstart = new Date(2015, 1, 1);
+            p1.dtend = new Date(2015, 1, 7);
+
+            p2 = new jurassic.Period();
+            p2.dtstart = new Date(2015, 1, 6);
+            p2.dtend = new Date(2015, 1, 10);
+
+            era1.addPeriod(p1);
+
+            era1.subtractPeriod(p2);
+            assert.equal(1, era1.periods.length);
+            assert.equal(6, era1.periods[0].dtend.getDate());
+        });
+
+        it('with a period cover the other', function() {
+            var era1, p1, p2, newEra1;
+
+            era1 = new jurassic.Era();
+
+            p1 = new jurassic.Period();
+            p1.dtstart = new Date(2015, 1, 1);
+            p1.dtend = new Date(2015, 1, 7);
+
+            p2 = new jurassic.Period();
+            p2.dtstart = new Date(2015, 1, 1);
+            p2.dtend = new Date(2015, 1, 10);
+
+            era1.addPeriod(p1);
+
+            era1.subtractPeriod(p2);
+            assert.equal(0, era1.periods.length);
+        });
+
+
+        it('with a period covering two others', function() {
+            var era1, p1, p2, p3, newEra1;
+
+            era1 = new jurassic.Era();
+
+            p1 = new jurassic.Period();
+            p1.dtstart = new Date(2015, 1, 3);
+            p1.dtend = new Date(2015, 1, 4);
+
+            p2 = new jurassic.Period();
+            p2.dtstart = new Date(2015, 1, 1);
+            p2.dtend = new Date(2015, 1, 12);
+
+            p3 = new jurassic.Period();
+            p3.dtstart = new Date(2015, 1, 1);
+            p3.dtend = new Date(2015, 1, 15);
+
+            era1.addPeriod(p1);
+            era1.addPeriod(p2);
+
+            era1.subtractPeriod(p3);
+            assert.equal(0, era1.periods.length);
+        });
+    });
+
+
     describe('subtractEra()', function() {
 
         it('substract era with one period', function() {
@@ -231,7 +340,7 @@ describe('Era', function() {
             assert.equal(5, era1.subtractEra(era2).periods.length);
         });
 
-
+        /*
         it('substract era with overlapped periods', function() {
             var era1 = new jurassic.Era(),
                 era2 = new jurassic.Era(),
@@ -259,7 +368,7 @@ describe('Era', function() {
             assert.equal(8, newEra.periods[0].dtend.getHours());
             assert.equal(0, newEra.periods[0].dtend.getMinutes());
         });
-
+        */
 
         function getLargeEra()
         {

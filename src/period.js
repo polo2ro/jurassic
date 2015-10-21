@@ -140,7 +140,7 @@ Period.prototype.getBusinessDays = function(halfday)
 Period.prototype.copyProperties = function(fromPeriod)
 {
     for(var prop in fromPeriod) {
-        if (fromPeriod.hasOwnProperty(prop) && this[prop] === undefined) {
+        if (fromPeriod.hasOwnProperty(prop) && (this[prop] === undefined || null === this[prop])) {
             this[prop] = fromPeriod[prop];
         }
     }

@@ -13,7 +13,7 @@ describe('Era', function() {
     describe('addPeriod()', function() {
 
 
-        it('add one boundary for two similar dates', function() {
+        it('add one boundary set for two similar dates', function() {
 
             var era, p1, p2;
 
@@ -35,6 +35,26 @@ describe('Era', function() {
             assert.equal(7, era.boundaries[1].rootDate.getDate());
             assert.equal(8, era.boundaries[2].rootDate.getDate());
         });
+
+
+
+        it('add two boundaries', function() {
+
+            var era, p1, p2;
+
+            era = new jurassic.Era();
+
+            p1 = new jurassic.Period();
+            p1.dtstart = new Date(2015, 1, 2, 7, 0, 0);
+            p1.dtend = new Date(2015, 1, 2, 9, 0, 1);
+
+            era.addPeriod(p1);
+
+            assert.equal(2, era.boundaries.length);
+            assert.equal(0, era.boundaries[0].rootDate.getSeconds());
+            assert.equal(1, era.boundaries[1].rootDate.getSeconds());
+        });
+
 
         it('is fluent', function() {
 
@@ -167,6 +187,7 @@ describe('Era', function() {
 
             newEra2 = era.getEraWithoutPeriod(p3);
             assert.equal(1, newEra2.periods.length);
+            assert.equal(2, newEra2.boundaries.length);
         });
 
 
@@ -191,9 +212,13 @@ describe('Era', function() {
             era1.addPeriod(p1);
 
             era1.subtractPeriod(p2);
+
             assert.equal(2, era1.periods.length);
             assert.equal(5, era1.periods[0].dtend.getDate());
             assert.equal(6, era1.periods[1].dtstart.getDate());
+            assert.equal(4, era1.boundaries.length);
+
+
         });
 
         it('with a period overlapping the other on left', function() {
@@ -214,6 +239,7 @@ describe('Era', function() {
             era1.subtractPeriod(p2);
             assert.equal(1, era1.periods.length);
             assert.equal(6, era1.periods[0].dtstart.getDate());
+            assert.equal(2, era1.boundaries.length);
         });
 
         it('with a period overlapping the other on right', function() {
@@ -234,6 +260,7 @@ describe('Era', function() {
             era1.subtractPeriod(p2);
             assert.equal(1, era1.periods.length);
             assert.equal(6, era1.periods[0].dtend.getDate());
+            assert.equal(2, era1.boundaries.length);
         });
 
         it('with a period cover the other', function() {
@@ -253,6 +280,7 @@ describe('Era', function() {
 
             era1.subtractPeriod(p2);
             assert.equal(0, era1.periods.length);
+            assert.equal(0, era1.boundaries.length);
         });
 
 
@@ -278,7 +306,38 @@ describe('Era', function() {
 
             era1.subtractPeriod(p3);
             assert.equal(0, era1.periods.length);
+            assert.equal(0, era1.boundaries.length);
         });
+
+
+        it('subtract on two periods with seconds', function() {
+            var era1 = new jurassic.Era(),
+                p1,
+                p2,
+                p3;
+
+            p1 = new jurassic.Period();
+            p1.dtstart = new Date(2015, 1, 2, 7, 0, 0);
+            p1.dtend = new Date(2015, 1, 2, 9, 0, 1);
+
+            p2 = new jurassic.Period();
+            p2.dtstart = new Date(2015, 1, 2, 6, 0, 0);
+            p2.dtend = new Date(2015, 1, 2, 10, 30, 0);
+
+            p3 = new jurassic.Period();
+            p3.dtstart = new Date(2015, 1, 2, 8, 0, 0);
+            p3.dtend = new Date(2015, 1, 2, 9, 0, 0);
+
+
+
+            era1.addPeriod(p1);
+            era1.addPeriod(p2);
+            era1.subtractPeriod(p3);
+
+            assert.equal(4, era1.periods.length);
+            assert.equal(7, era1.boundaries.length); // one common boundary at 09:00:00
+        });
+
     });
 
 
@@ -340,7 +399,7 @@ describe('Era', function() {
             assert.equal(5, era1.subtractEra(era2).periods.length);
         });
 
-        /*
+
         it('substract era with overlapped periods', function() {
             var era1 = new jurassic.Era(),
                 era2 = new jurassic.Era(),
@@ -368,7 +427,7 @@ describe('Era', function() {
             assert.equal(8, newEra.periods[0].dtend.getHours());
             assert.equal(0, newEra.periods[0].dtend.getMinutes());
         });
-        */
+
 
         function getLargeEra()
         {
@@ -408,7 +467,7 @@ describe('Era', function() {
         }
 
 
-        /*
+
         it('substract era on large amount of periods, for work on speed optimizations', function() {
             var unavailableEra = new jurassic.Era();
             unavailableEra.addPeriod({
@@ -419,7 +478,7 @@ describe('Era', function() {
 
             assert.equal(731, newEra.periods.length);
         });
-        */
+
 
     });
 

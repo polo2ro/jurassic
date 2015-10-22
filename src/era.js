@@ -326,21 +326,28 @@ Era.prototype.subtractPeriod = function(period)
 
     function updateEnd(boundPeriod)
     {
-        era.removePeriodBoundary(boundPeriod.dtend, boundPeriod, 'right');
+        era.removePeriodBoundary(boundPeriod.dtend, boundPeriod, 'left');
         boundPeriod.dtend = period.dtstart;
-        era.addPeriodBoundary(boundPeriod.dtend, boundPeriod, 'right');
+        era.addPeriodBoundary(boundPeriod.dtend, boundPeriod, 'left');
     }
 
 
     function updateStart(boundPeriod)
     {
-        era.removePeriodBoundary(boundPeriod.dtstart, boundPeriod, 'left');
+        era.removePeriodBoundary(boundPeriod.dtstart, boundPeriod, 'right');
         boundPeriod.dtstart = period.dtend;
-        era.addPeriodBoundary(boundPeriod.dtstart, boundPeriod, 'left');
+        era.addPeriodBoundary(boundPeriod.dtstart, boundPeriod, 'right');
     }
 
     function createStartPeriod(boundPeriod)
     {
+        if (boundPeriod.dtend < period.dtend) {
+            // end before
+
+            updateEnd(boundPeriod);
+            return;
+        }
+
         var start = new Period();
         start.copyProperties(boundPeriod);
         start.dtend = period.dtstart;
@@ -349,13 +356,16 @@ Era.prototype.subtractPeriod = function(period)
         if (boundPeriod.dtstart < period.dtend) {
             updateStart(boundPeriod);
         }
+
     }
 
     function createEndPeriod(boundPeriod)
     {
         if (boundPeriod.dtstart > period.dtstart) {
-            // start before
-            return updateStart(boundPeriod);
+            // start after
+
+            updateStart(boundPeriod);
+            return;
         }
 
         var end = new Period();
@@ -376,21 +386,21 @@ Era.prototype.subtractPeriod = function(period)
     for(var i=0; i<this.boundaries.length; i++) {
         boundary = this.boundaries[i];
 
-
-
         if (boundary.rootDate < period.dtstart) {
             // check right only
 
             boundary.right.forEach(deleteCovered);
+            boundary.right.filter(endAfter).forEach(createEndPeriod);
+        } else {
+
+
+            // delete covered periods
+            boundary.right.forEach(deleteCovered);
+            boundary.left.forEach(deleteCovered);
+
+            boundary.left.filter(startBefore).forEach(createStartPeriod);
+            boundary.right.filter(endAfter).forEach(createEndPeriod);
         }
-
-
-        // delete covered periods
-        boundary.right.forEach(deleteCovered);
-        boundary.left.forEach(deleteCovered);
-
-        boundary.left.filter(startBefore).forEach(createStartPeriod);
-        boundary.right.filter(endAfter).forEach(createEndPeriod);
 
 
         if (boundary.rootDate > period.dtend) {

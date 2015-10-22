@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/polo2ro/jurassic.svg?branch=master)](https://travis-ci.org/polo2ro/jurassic)
+
 # jurassic
 
 A javascript library for manipulating periods. The library contain 2 base objects to handle periods:

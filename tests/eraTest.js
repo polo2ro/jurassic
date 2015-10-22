@@ -332,10 +332,13 @@ describe('Era', function() {
 
             era1.addPeriod(p1);
             era1.addPeriod(p2);
+
+
             era1.subtractPeriod(p3);
 
+
             assert.equal(4, era1.periods.length);
-            assert.equal(7, era1.boundaries.length); // one common boundary at 09:00:00
+            assert.equal(6, era1.boundaries.length); // two common boundary at 08:00:00 and 09:00:00
         });
 
     });

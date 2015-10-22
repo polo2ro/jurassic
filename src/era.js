@@ -291,16 +291,14 @@ Era.prototype.getEraWithoutPeriod = function(period)
     return era;
 };
 
+
+
 /**
- * Remove period from the current era
- * boundaries must be sorted
- *
- * @todo test compatibility with getEraWithoutPeriod
- *
+ * A list of functions needed by the subtractPeriodOnSortedBoundaries method
  * @param {Period} period
- * @return {Era}
+ * @return {object}
  */
-Era.prototype.subtractPeriod = function(period)
+Era.prototype.getSubtractPeriodCallbacks = function(period)
 {
     var era = this;
     var Period = require('./period.js');
@@ -379,63 +377,85 @@ Era.prototype.subtractPeriod = function(period)
     }
 
 
+    return {
+        deleteCovered: deleteCovered,
+        startBefore: startBefore,
+        endAfter: endAfter,
+        updateEnd: updateEnd,
+        updateStart: updateStart,
+        createStartPeriod: createStartPeriod,
+        createEndPeriod: createEndPeriod
+    };
+};
 
+
+
+/**
+ * Subtract period from Era
+ * boundaries must be sorted
+ * @param {Period} period
+ */
+Era.prototype.subtractPeriodOnSortedBoundaries = function(period)
+{
+    var cb = this.getSubtractPeriodCallbacks(period);
 
     // get all boundaries inside period
     var boundary;
     for(var i=0; i<this.boundaries.length; i++) {
         boundary = this.boundaries[i];
-
         if (boundary.rootDate < period.dtstart) {
             // check right only
 
-            boundary.right.forEach(deleteCovered);
-            boundary.right.filter(endAfter).forEach(createEndPeriod);
+            boundary.right.forEach(cb.deleteCovered);
+            boundary.right.filter(cb.endAfter).forEach(cb.createEndPeriod);
         } else {
 
 
             // delete covered periods
-            boundary.right.forEach(deleteCovered);
-            boundary.left.forEach(deleteCovered);
+            boundary.right.forEach(cb.deleteCovered);
+            boundary.left.forEach(cb.deleteCovered);
 
-            boundary.left.filter(startBefore).forEach(createStartPeriod);
-            boundary.right.filter(endAfter).forEach(createEndPeriod);
+            boundary.left.filter(cb.startBefore).forEach(cb.createStartPeriod);
+            boundary.right.filter(cb.endAfter).forEach(cb.createEndPeriod);
         }
 
 
         if (boundary.rootDate > period.dtend) {
             //end
-            return era;
+            return;
         }
     }
+};
 
-    return era;
+/**
+ * Remove period from the current era
+ * boundaries must be sorted
+ *
+ *
+ * @param {Period} period
+ * @return {Era}
+ */
+Era.prototype.subtractPeriod = function(period)
+{
+    this.sortBoundaries();
+    this.subtractPeriodOnSortedBoundaries(period);
+
+    return this;
 };
 
 
 /**
  * Update the Era object with the difference between the specified Era object and this instance.
  *
- * @todo use subtractPeriod instead of getEraWithoutPeriod
  *
  * @param {Era} era
  * @return {Era}
  */
 Era.prototype.subtractEra = function(era)
 {
-    /*
-    var processEra = this;
-
-    for(var p=0; p < era.periods.length; p++) {
-        processEra = processEra.getEraWithoutPeriod(era.periods[p]);
-    }
-
-    return processEra;
-    */
-
     this.sortBoundaries();
     for(var p=0; p < era.periods.length; p++) {
-        this.subtractPeriod(era.periods[p]);
+        this.subtractPeriodOnSortedBoundaries(era.periods[p]);
     }
 
     return this;

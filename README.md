@@ -16,8 +16,6 @@ Era.addPeriod
 Add a period to Era, accept a period object as parameter, 
 if the given parameter is not a period, the period will be created from the object
 
-# Example
-
 ```javascript
 
 var jurassic = require('jurassic');
@@ -53,7 +51,6 @@ Era.subtractPeriod
 Returns a new Era object whose value is the difference between the specified Period object and this instance.
 Accept a period object as parameter
 
-# Example
 
 ```javascript
 
@@ -92,21 +89,7 @@ Era.intersectEra
 Get the intesection of the specified Era object and this instance. This method return an Era object (a list of periods)
 
 
-# Example
 
-```javascript
-var jurassic = require('jurassic');
-
-var event1 = new jurassic.Period();
-event1.dtstart = new Date(2014,0,1);
-event1.dtend = new Date(2015,0,1);
-
-var event2 = new jurassic.Period();
-event2.dtstart = new Date(2015,0,1);
-event2.dtend = new Date(2016,0,1);
-
-var era = new jurassic.Era();
-era.addPeriod(event1).addPeriod(event2);
 ```
 
 

@@ -178,42 +178,58 @@ Era.prototype.sortBoundaries = function()
 
 /**
  * Get new Era object with merged overlapping events
+ * @param {Boolean} [addEventProperty]
  * @return {Era}
  */
-Era.prototype.getFlattenedEra = function()
+Era.prototype.getFlattenedEra = function(addEventProperty)
 {
+    if (undefined === addEventProperty) {
+        addEventProperty = false;
+    }
+
     this.sortBoundaries();
     var Period = require('./period');
 
     var boundary,
-        openStatus = false,
+        openStatus = 0,
         lastDate = null,
         flattenedEra = new Era(),
         period,
         events = [];
+
+
 
     for(var i=0; i<this.boundaries.length; i++) {
         boundary = this.boundaries[i];
         Array.prototype.push.apply(events, boundary.right);
 
         // open period
-        if (!openStatus && boundary.left.length === 0) { // nothing before boundary
-            openStatus = true;
-            lastDate = new Date(boundary.rootDate);
-            continue;
+        if (0 === openStatus) { // nothing before boundary
+            openStatus -= boundary.left.length;
+            openStatus += boundary.right.length;
+            if (openStatus > 0) {
+                lastDate = new Date(boundary.rootDate);
+                continue;
+            }
         }
 
         // close period
-        if (openStatus && boundary.right.length === 0) { // nothing after boundary
-            openStatus = false;
+        if (openStatus > 0) { // nothing after boundary
+            openStatus -= boundary.left.length;
+            openStatus += boundary.right.length;
 
-            period = new Period();
-            period.dtstart = new Date(lastDate);
-            period.dtend = new Date(boundary.rootDate);
-            period.events = events;
-            flattenedEra.addPeriod(period);
+            if (openStatus === 0) {
 
-            events = [];
+                period = new Period();
+                period.dtstart = new Date(lastDate);
+                period.dtend = new Date(boundary.rootDate);
+                if (true === addEventProperty) {
+                    period.events = events;
+                }
+                flattenedEra.addPeriod(period);
+
+                events = [];
+            }
         }
     }
 

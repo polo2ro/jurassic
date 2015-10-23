@@ -129,10 +129,15 @@ describe('Era', function() {
 
             assert.equal(2, era.periods.length);
 
-            flattenedEra = era.getFlattenedEra();
+            flattenedEra = era.getFlattenedEra(true);
 
             assert.equal(1, flattenedEra.periods.length);
 
+            var period = flattenedEra.periods[0];
+
+            assert.equal(1, period.dtstart.getDate());
+            assert.equal(8, period.dtend.getDate());
+            assert.equal(2, period.events.length);
         });
 
 
@@ -154,8 +159,15 @@ describe('Era', function() {
             era.addPeriod(p2);
 
             assert.equal(2, era.periods.length);
-            assert.equal(1, era.getFlattenedEra().periods.length);
 
+            var flattenedEra = era.getFlattenedEra();
+
+            assert.equal(1, flattenedEra.periods.length);
+
+            var period = flattenedEra.periods[0];
+
+            assert.equal(1, period.dtstart.getDate());
+            assert.equal(8, period.dtend.getDate());
         });
 
     });

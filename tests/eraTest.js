@@ -1,14 +1,52 @@
 /*global describe: false, it: false */
 
+'use strict';
+
 var assert = require('assert');
 var jurassic = require('../src/jurassic');
 
 
+function getLargeEra()
+{
+    var large = new jurassic.Era();
+
+    function addDay(day) {
+        var am = {
+            dtstart: new Date(day),
+            dtend: new Date(day)
+        };
+
+        var pm = {
+            dtstart: new Date(day),
+            dtend: new Date(day)
+        };
+
+        am.dtstart.setHours(8);
+        am.dtend.setHours(12);
+
+        pm.dtstart.setHours(14);
+        pm.dtend.setHours(18);
+
+        large.addPeriod(am);
+        large.addPeriod(pm);
+    }
+
+
+    var day = new Date(2015,0,1);
+
+
+    for(var i=0; i<100; i++) {
+        addDay(day);
+        day.setDate(1+day.getDate());
+    }
+
+    return large;
+}
 
 
 describe('Era', function() {
 
-    'use strict';
+
 
     describe('addPeriod()', function() {
 
@@ -132,6 +170,7 @@ describe('Era', function() {
             flattenedEra = era.getFlattenedEra(true);
 
             assert.equal(1, flattenedEra.periods.length);
+            assert.equal(2, era.periods.length);
 
             var period = flattenedEra.periods[0];
 
@@ -168,6 +207,27 @@ describe('Era', function() {
 
             assert.equal(1, period.dtstart.getDate());
             assert.equal(8, period.dtend.getDate());
+        });
+
+
+        it('Does nothing if no intersections', function() {
+            var largeEra = getLargeEra();
+            var flattendedEra = largeEra.getFlattenedEra();
+            assert.equal(200, largeEra.periods.length);
+            assert.equal(200, flattendedEra.periods.length);
+        });
+
+        it('Flatten periods in large era', function() {
+            var largeEra = getLargeEra();
+            largeEra.addPeriod({
+                dtstart: new Date(2015,0,15,0,0,0),
+                dtend: new Date(2015,0,16,8,0,0)
+            });
+
+            var flattenedEra = largeEra.getFlattenedEra();
+
+            assert.equal(198, flattenedEra.periods.length);
+            assert.equal(201, largeEra.periods.length);
         });
 
     });
@@ -444,42 +504,7 @@ describe('Era', function() {
         });
 
 
-        function getLargeEra()
-        {
-            var large = new jurassic.Era();
 
-            function addDay(day) {
-                var am = {
-                    dtstart: new Date(day),
-                    dtend: new Date(day)
-                };
-
-                var pm = {
-                    dtstart: new Date(day),
-                    dtend: new Date(day)
-                };
-
-                am.dtstart.setHours(8);
-                am.dtend.setHours(12);
-
-                pm.dtstart.setHours(14);
-                pm.dtend.setHours(18);
-
-                large.addPeriod(am);
-                large.addPeriod(pm);
-            }
-
-
-            var day = new Date(2015,0,1);
-
-
-            for(var i=0; i<365; i++) {
-                addDay(day);
-                day.setDate(1+day.getDate());
-            }
-
-            return large;
-        }
 
 
 
@@ -491,7 +516,7 @@ describe('Era', function() {
             });
             var newEra = unavailableEra.subtractEra(getLargeEra());
 
-            assert.equal(731, newEra.periods.length);
+            assert.equal(201, newEra.periods.length);
         });
 
 

@@ -13,7 +13,27 @@ The library has been tested only on node.js
 
 Era.addPeriod
 -------------
-Add a period to Era, accept a period object as parameter
+Add a period to Era, accept a period object as parameter, 
+if the given parameter is not a period, the period will be created from the object
+
+# Example
+
+```javascript
+
+var jurassic = require('jurassic');
+var era = new jurassic.Era();
+
+var event1 = new jurassic.Period();
+event1.dtstart = new Date(2014,0,1);
+event1.dtend = new Date(2014,0,3);
+
+era.addPeriod(event1);
+
+era.addPeriod({
+    dtstart: new Date(2014,0,6),
+    dtend: new Date(2014,0,8)
+});
+```
 
 Era.removePeriod
 ----------------
@@ -33,9 +53,34 @@ Era.subtractPeriod
 Returns a new Era object whose value is the difference between the specified Period object and this instance.
 Accept a period object as parameter
 
+# Example
+
+```javascript
+
+var jurassic = require('jurassic');
+var era = new jurassic.Era();
+
+era.addPeriod({
+    dtstart: new Date(2014,0,1),
+    dtend: new Date(2014,0,15)
+});
+
+var drill = new jurassic.Period();
+drill.dtstart = new Date(2014,0,10);
+drill.dtend = new Date(2014,0,11);
+
+era.subtractPeriod(drill);
+
+// here we have 2 periods, from 1 to 10 and from 11 to 15
+```
+
+
+
 Era.subtractEra
 ----------------
 Returns a new Era object whose value is the difference between the specified Era object and this instance.
+
+
 
 Era.intersectPeriod
 -------------------

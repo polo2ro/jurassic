@@ -18,11 +18,6 @@ function Period()
      */
     this.dtend = null;
 
-    /**
-     * @var {Era}
-     */
-    this.era = null;
-
 }
 
 /**

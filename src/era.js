@@ -474,6 +474,18 @@ Era.prototype.subtractPeriod = function(period)
  */
 Era.prototype.subtractEra = function(era)
 {
+    era.periods.sort(function(p1, p2) {
+        if (p1.dtstart === p2.dtstart) {
+            return 0;
+        }
+
+        if (p1.dtstart > p2.dtstart) {
+            return 1;
+        }
+
+        return -1;
+    });
+
 
     this.sortBoundaries();
     for(var p=0; p < era.periods.length; p++) {

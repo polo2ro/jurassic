@@ -9,6 +9,14 @@ A javascript library for manipulating periods. The library contain 2 base object
 
 The library has been tested only on node.js
 
+Usage
+-----
+
+```bash
+npm install jurassic
+```
+
+
 # Methods
 
 Era.addPeriod
@@ -33,6 +41,9 @@ era.addPeriod({
 });
 ```
 
+The period can contain other properties such as icalendar properties
+
+
 Era.removePeriod
 ----------------
 Remove a periods from era using dates only, if a period with the same dates exists in era, il will be removed.
@@ -48,7 +59,7 @@ Returns a new Era object whose value is the sum of the specified Era object and 
 
 Era.subtractPeriod
 -------------------
-Returns a new Era object whose value is the difference between the specified Period object and this instance.
+Update the Era object with the difference between the specified Period object and this instance.
 Accept a period object as parameter
 
 
@@ -75,7 +86,7 @@ era.subtractPeriod(drill);
 
 Era.subtractEra
 ----------------
-Returns a new Era object whose value is the difference between the specified Era object and this instance.
+Update the Era object with the difference between the specified Era object and this instance.
 
 
 
@@ -90,10 +101,10 @@ Get the intesection of the specified Era object and this instance. This method r
 
 
 
-```
-
-
 # Period
+
+A period can contain any property, only dtstart and dtend are mandatory for the interaction with the library methods.
+
 
 Period.getBusinessDays
 --------------

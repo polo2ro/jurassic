@@ -419,6 +419,7 @@ Era.prototype.subtractPeriodOnSortedBoundaries = function(period)
     var boundary;
     for(var i=0; i<this.boundaries.length; i++) {
         boundary = this.boundaries[i];
+
         if (boundary.rootDate < period.dtstart) {
             // check right only
 
@@ -430,6 +431,10 @@ Era.prototype.subtractPeriodOnSortedBoundaries = function(period)
             // delete covered periods
             boundary.right.forEach(cb.deleteCovered);
             boundary.left.forEach(cb.deleteCovered);
+
+            if (boundary.rootDate > period.dtend) {
+                continue;
+            }
 
             boundary.left.filter(cb.startBefore).forEach(cb.createStartPeriod);
             boundary.right.filter(cb.endAfter).forEach(cb.createEndPeriod);
@@ -469,13 +474,13 @@ Era.prototype.subtractPeriod = function(period)
  */
 Era.prototype.subtractEra = function(era)
 {
+
     this.sortBoundaries();
     for(var p=0; p < era.periods.length; p++) {
         this.subtractPeriodOnSortedBoundaries(era.periods[p]);
     }
 
     return this;
-
 };
 
 

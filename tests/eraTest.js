@@ -335,13 +335,35 @@ describe('Era', function() {
             assert.equal(2, era1.boundaries.length);
         });
 
+
+        it('with an invalid period', function() {
+            var era1, p1, p2, newEra1;
+
+            era1 = new jurassic.Era();
+
+            p1 = new jurassic.Period();
+            p1.dtstart = new Date(2015, 1, 2);
+            p1.dtend = new Date(2015, 1, 7);
+
+            p2 = new jurassic.Period();
+            p2.dtstart = new Date(2015, 1, 15);
+            p2.dtend = new Date(2015, 1, 16);
+
+            era1.addPeriod(p1);
+
+            era1.subtractPeriod(p2);
+            assert.equal(1, era1.periods.length);
+            assert.equal(2, era1.boundaries.length);
+        });
+
+
         it('with a period cover the other', function() {
             var era1, p1, p2, newEra1;
 
             era1 = new jurassic.Era();
 
             p1 = new jurassic.Period();
-            p1.dtstart = new Date(2015, 1, 1);
+            p1.dtstart = new Date(2015, 1, 2);
             p1.dtend = new Date(2015, 1, 7);
 
             p2 = new jurassic.Period();
@@ -411,6 +433,43 @@ describe('Era', function() {
 
             assert.equal(4, era1.periods.length);
             assert.equal(6, era1.boundaries.length); // two common boundary at 08:00:00 and 09:00:00
+        });
+
+
+
+        it('two consecutive subtract on one day', function() {
+            var era1, p1, p2, p3, p4, p5;
+
+            era1 = new jurassic.Era();
+
+            p1 = new jurassic.Period();
+            p1.dtstart = new Date(2015, 1, 15);
+            p1.dtend = new Date(2015, 1, 16);
+
+            p2 = new jurassic.Period();
+            p2.dtstart = new Date(2015, 1, 15, 8);
+            p2.dtend = new Date(2015, 1, 15, 12);
+
+            p3 = new jurassic.Period();
+            p3.dtstart = new Date(2015, 1, 15, 14);
+            p3.dtend = new Date(2015, 1, 15, 18);
+
+            p4 = new jurassic.Period();
+            p4.dtstart = new Date(2015, 1, 16, 8);
+            p4.dtend = new Date(2015, 1, 16, 12);
+
+            p5 = new jurassic.Period();
+            p5.dtstart = new Date(2015, 1, 14, 14);
+            p5.dtend = new Date(2015, 1, 14, 18);
+
+            era1.addPeriod(p1);
+
+            era1.subtractPeriod(p5); // ignored
+            era1.subtractPeriod(p2);
+            era1.subtractPeriod(p3);
+            era1.subtractPeriod(p4); // ignored
+            assert.equal(3, era1.periods.length);
+            assert.equal(6, era1.boundaries.length);
         });
 
     });
@@ -504,7 +563,22 @@ describe('Era', function() {
         });
 
 
+        it('substract era with working hours, get unavailable hours on one day', function() {
+            var unavailableEra = new jurassic.Era();
+            unavailableEra.addPeriod({
+                dtstart: new Date(2015,0,5),
+                dtend: new Date(2015,0,6)
+            });
+            var newEra = unavailableEra.subtractEra(getLargeEra());
 
+            /*
+            newEra.periods.forEach(function(event) {
+                console.log(event.dtstart.getDate()+' '+event.dtstart.getHours()+'H -> '+event.dtend.getDate()+' '+event.dtend.getHours()+'H');
+            });
+            */
+            assert.equal(3, newEra.periods.length);
+
+        });
 
 
 

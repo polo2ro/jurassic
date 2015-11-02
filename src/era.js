@@ -91,6 +91,10 @@ Era.prototype.addPeriod = function(period) {
  */
 Era.prototype.removePeriod = function(period) {
 
+    if (period.dtstart.getTime() >= period.dtend.getTime()) {
+        throw new Error('Invalid period');
+    }
+
     var i;
 
     for (i = 0; i < this.periods.length; i++) {
@@ -321,6 +325,12 @@ Era.prototype.getSubtractPeriodCallbacks = function(period)
 
     function deleteCovered(boundPeriod)
     {
+        if (boundPeriod.dtstart.getTime() >= boundPeriod.dtend.getTime()) {
+            console.log('Invalid period in boundary, cannot be removed on date '+boundPeriod.dtstart);
+            console.log(boundPeriod);
+            return;
+        }
+
         if (boundPeriod.dtstart >= period.dtstart && boundPeriod.dtend <= period.dtend) {
             era.removePeriod(boundPeriod);
             return;
@@ -340,6 +350,10 @@ Era.prototype.getSubtractPeriodCallbacks = function(period)
 
     function updateEnd(boundPeriod)
     {
+        if (boundPeriod.dtstart >= period.dtstart) {
+            throw new Error('Action not permited on boundPeriod');
+        }
+
         era.removePeriodBoundary(boundPeriod.dtend, boundPeriod, 'left');
         boundPeriod.dtend = period.dtstart;
         era.addPeriodBoundary(boundPeriod.dtend, boundPeriod, 'left');
@@ -348,6 +362,10 @@ Era.prototype.getSubtractPeriodCallbacks = function(period)
 
     function updateStart(boundPeriod)
     {
+        if (boundPeriod.dtend <= period.dtend) {
+            throw new Error('Action not permited on boundPeriod');
+        }
+
         era.removePeriodBoundary(boundPeriod.dtstart, boundPeriod, 'right');
         boundPeriod.dtstart = period.dtend;
         era.addPeriodBoundary(boundPeriod.dtstart, boundPeriod, 'right');

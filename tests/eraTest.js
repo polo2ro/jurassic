@@ -336,7 +336,7 @@ describe('Era', function() {
         });
 
 
-        it('with an invalid period', function() {
+        it('with an external period', function() {
             var era1, p1, p2, newEra1;
 
             era1 = new jurassic.Era();
@@ -354,6 +354,27 @@ describe('Era', function() {
             era1.subtractPeriod(p2);
             assert.equal(1, era1.periods.length);
             assert.equal(2, era1.boundaries.length);
+        });
+
+
+        it('with an invalid period', function() {
+            var era1, p1, p2, newEra1;
+
+            era1 = new jurassic.Era();
+
+            p1 = new jurassic.Period();
+            p1.dtstart = new Date(2015, 1, 2, 5, 30);
+            p1.dtend = new Date(2015, 1, 7, 19, 30);
+
+            p2 = new jurassic.Period();
+            p2.dtstart = new Date(2015, 1, 2, 6, 30);
+            p2.dtend = new Date(2015, 1, 2, 6, 30);
+
+            era1.addPeriod(p1);
+
+            assert.throws(function() {
+                era1.subtractPeriod(p2);
+            }, Error);
         });
 
 
@@ -402,6 +423,31 @@ describe('Era', function() {
             assert.equal(0, era1.periods.length);
             assert.equal(0, era1.boundaries.length);
         });
+
+
+        it('2 equals periods', function() {
+            var era1, p1, p2;
+
+            era1 = new jurassic.Era();
+
+            p1 = new jurassic.Period();
+            p1.dtstart = new Date(2015, 1, 3, 8);
+            p1.dtend = new Date(2015, 1, 3, 18);
+
+            p2 = new jurassic.Period();
+            p2.dtstart = new Date(2015, 1, 3, 8);
+            p2.dtend = new Date(2015, 1, 3, 18);
+
+
+            era1.addPeriod(p1);
+
+            era1.subtractPeriod(p2);
+            assert.equal(0, era1.periods.length);
+            assert.equal(0, era1.boundaries.length);
+        });
+
+
+
 
 
         it('subtract on two periods with seconds', function() {

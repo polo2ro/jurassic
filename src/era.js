@@ -431,6 +431,10 @@ Era.prototype.getSubtractPeriodCallbacks = function(period)
  */
 Era.prototype.subtractPeriodOnSortedBoundaries = function(period)
 {
+    if (period.dtstart >= period.dtend) {
+        throw new Error('substract not allowed with invalid period');
+    }
+
     var cb = this.getSubtractPeriodCallbacks(period);
 
     // get all boundaries inside period

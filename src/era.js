@@ -373,7 +373,7 @@ Era.prototype.getSubtractPeriodCallbacks = function(period)
 
     function createStartPeriod(boundPeriod)
     {
-        if (boundPeriod.dtend < period.dtend) {
+        if (boundPeriod.dtend <= period.dtend) {
             // end before
 
             updateEnd(boundPeriod);
@@ -393,7 +393,7 @@ Era.prototype.getSubtractPeriodCallbacks = function(period)
 
     function createEndPeriod(boundPeriod)
     {
-        if (boundPeriod.dtstart > period.dtstart) {
+        if (boundPeriod.dtstart >= period.dtstart) {
             // start after
 
             updateStart(boundPeriod);

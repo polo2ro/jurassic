@@ -144,6 +144,23 @@ describe('Era', function() {
             assert.equal(true, era.periods[0].dtstart instanceof Date);
             assert.equal(true, era.periods[0].dtend instanceof Date);
         });
+
+
+
+
+        it('with an invalid period', function() {
+            var era1, p1;
+
+            era1 = new jurassic.Era();
+
+            p1 = new jurassic.Period();
+            p1.dtstart = new Date(2015, 1, 2, 6, 30);
+            p1.dtend = new Date(2015, 1, 2, 6, 30);
+
+            assert.throws(function() {
+                era1.addPeriod(p1);
+            }, Error);
+        });
     });
 
 
@@ -638,6 +655,7 @@ describe('Era', function() {
 
             assert.equal(201, newEra.periods.length);
         });
+
 
 
     });

@@ -351,7 +351,7 @@ Era.prototype.getSubtractPeriodCallbacks = function(period)
     function updateEnd(boundPeriod)
     {
         if (boundPeriod.dtstart >= period.dtstart) {
-            throw new Error('Action not permited on boundPeriod');
+            throw new Error('updateEnd: action not permited on boundPeriod, from '+boundPeriod.dtend+' to '+period.dtstart);
         }
 
         era.removePeriodBoundary(boundPeriod.dtend, boundPeriod, 'left');
@@ -363,7 +363,7 @@ Era.prototype.getSubtractPeriodCallbacks = function(period)
     function updateStart(boundPeriod)
     {
         if (boundPeriod.dtend <= period.dtend) {
-            throw new Error('Action not permited on boundPeriod');
+            throw new Error('updateStart: action not permited on boundPeriod, from '+boundPeriod.dtstart+' to '+period.dtend);
         }
 
         era.removePeriodBoundary(boundPeriod.dtstart, boundPeriod, 'right');

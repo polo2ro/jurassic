@@ -111,5 +111,3 @@ Period.getBusinessDays
 get the number of days in period with a precision of 0.5 days
 
 
-[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/polo2ro/jurassic/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
-

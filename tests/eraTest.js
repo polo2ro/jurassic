@@ -777,4 +777,26 @@ describe('Era', function() {
     });
 
 
+
+    describe('getDays()', function() {
+
+        it('Sum of 2 periods', function() {
+            var era1 = new jurassic.Era(),
+                p1 = new jurassic.Period(),
+                p2 = new jurassic.Period();
+
+            p1.dtstart = new Date(2015, 1, 1, 8,0,0,0);
+            p1.dtend = new Date(2015, 1, 2, 18,0,0,0);
+
+            p2.dtstart = new Date(2015, 1, 5, 14,0,0,0);
+            p2.dtend = new Date(2015, 1, 5, 18,0,0,0);
+
+            era1.addPeriod(p1);
+            era1.addPeriod(p2);
+
+            assert.equal(3, era1.getDays());
+        });
+    });
+
+
 });

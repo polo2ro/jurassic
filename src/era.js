@@ -589,4 +589,30 @@ Era.prototype.intersectEra = function(era)
     return processEra;
 };
 
+
+
+
+/**
+ * Get total days
+ * @param {Era} era
+ * @return {Era}
+ */
+Era.prototype.getDays = function()
+{
+    var days = 0;
+
+    for(var p=0; p < this.periods.length; p++) {
+        days += this.periods[p].getDays();
+    }
+
+    return days;
+};
+
+
+
+
+
+
+
+
 module.exports = Era;

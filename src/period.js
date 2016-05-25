@@ -95,6 +95,23 @@ Period.prototype.getDayPeriod = function(day)
 };
 
 
+Period.prototype.getDays = function()
+{
+    if (null === this.dtstart || null === this.dtend) {
+        throw new Error('invalid period');
+    }
+
+    var days = 0;
+    var loopPeriod;
+    var loop = new Date(this.dtstart);
+    while (loop.getTime() < this.dtend.getTime()) {
+        days += 1;
+        loop.setDate(loop.getDate() + 1);
+    }
+
+    return days;
+};
+
 
 /**
  * Get number of days in period with a 0.5 days precision

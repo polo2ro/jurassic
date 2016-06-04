@@ -593,16 +593,20 @@ Era.prototype.intersectEra = function(era)
 
 
 /**
- * Get total days
- * @param {Era} era
- * @return {Era}
+ * Get list of days in Era
+ * @return {Object}
  */
 Era.prototype.getDays = function()
 {
-    var days = 0;
+    var days = {};
 
     for(var p=0; p < this.periods.length; p++) {
-        days += this.periods[p].getDays();
+        var periodDays = this.periods[p].getDays();
+        for(var time in periodDays) {
+            if (periodDays.hasOwnProperty(time)) {
+                days[time] = periodDays[time];
+            }
+        }
     }
 
     return days;

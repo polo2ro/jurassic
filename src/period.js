@@ -95,17 +95,23 @@ Period.prototype.getDayPeriod = function(day)
 };
 
 
+/**
+ * Get gays in period
+ * @throws {Error} [[Description]]
+ * @returns {object} list of all days
+ */
 Period.prototype.getDays = function()
 {
     if (null === this.dtstart || null === this.dtend) {
         throw new Error('invalid period');
     }
 
-    var days = 0;
+    var days = {};
     var loopPeriod;
     var loop = new Date(this.dtstart);
+    loop.setHours(0,0,0,0);
     while (loop.getTime() < this.dtend.getTime()) {
-        days += 1;
+        days[loop.getTime()] = new Date(loop);
         loop.setDate(loop.getDate() + 1);
     }
 

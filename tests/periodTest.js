@@ -53,5 +53,11 @@ describe('Period', function () {
             period.dtend.setDate(period.dtend.getDate() +2);
             assert.equal(2.5, period.getBusinessDays());
         });
+
+        it('get days on two days and a half period', function () {
+            var period = getHPeriod(8, 12);
+            period.dtend.setDate(period.dtend.getDate() +2);
+            assert.equal(3, Object.keys(period.getDays()).length);
+        });
     });
 });

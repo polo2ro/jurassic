@@ -2,7 +2,9 @@
 
 # jurassic
 
-A javascript library for manipulating periods. The library contain 2 base objects to handle periods:
+A javascript library for periods manipulations. 
+
+The library contain 2 base objects to handle periods:
 
 * jurassic.Era: a group of periods
 * jurassic.Period: a period with a start date and end date

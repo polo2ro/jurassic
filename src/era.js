@@ -74,7 +74,7 @@ Era.prototype.addPeriod = function(period) {
     }
 
     if (period.dtstart.getTime() >= period.dtend.getTime()) {
-        throw new Error('Invalid period');
+        throw new Error('Invalid period '+period.dtstart+' >= '+period.dtend);
     }
 
     this.periods.push(period);
@@ -403,7 +403,12 @@ Era.prototype.getSubtractPeriodCallbacks = function(period)
         var end = new Period();
         end.copyProperties(boundPeriod);
         end.dtstart = period.dtend;
-        era.addPeriod(end);
+
+        try {
+            era.addPeriod(end);
+        } catch(e) {
+            // ignore invalid period
+        }
 
         if (boundPeriod.dtend > period.dtstart) {
             updateEnd(boundPeriod);
